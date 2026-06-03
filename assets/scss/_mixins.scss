@@ -1,0 +1,153 @@
+// ============================================================
+// Миксины LPS Коллекционер
+// ============================================================
+@use 'vars' as *;
+
+// — Адаптивность —
+@mixin sm { @media (max-width: #{$bp-sm}) { @content; } }
+@mixin md { @media (max-width: #{$bp-md}) { @content; } }
+@mixin lg { @media (max-width: #{$bp-lg}) { @content; } }
+
+// — Карточка с ховером —
+@mixin card($radius: $r-md) {
+  border: 1px solid $line;
+  border-radius: $radius;
+  background: $bg-card;
+  box-shadow: $sh-sm;
+  overflow: hidden;
+  transition: transform .18s, box-shadow .18s, border-color .18s;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: $sh-md;
+    border-color: $brand-line;
+  }
+}
+
+// — Витрина фигурки (fig) —
+@mixin fig-shelf($tint: $t-lav) {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 92% at 50% 16%, rgba(255,255,255,.9), rgba(255,255,255,0) 62%),
+    $tint;
+
+  .glyph {
+    font-size: 34px;
+    line-height: 1;
+    position: relative;
+    z-index: 1;
+    transform: translateY(-4%);
+    filter: drop-shadow(0 7px 5px rgba(40,32,18,.20));
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 15%;
+    transform: translateX(-50%);
+    width: 48%;
+    height: 9px;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(40,32,18,.20), rgba(40,32,18,0));
+  }
+}
+
+// — Инпут —
+@mixin input-base {
+  width: 100%;
+  padding: 9px 12px;
+  font-size: 13.5px;
+  font-family: $font-body;
+  font-weight: 600;
+  border: 1px solid $line-2;
+  border-radius: $r-md;
+  background: $bg-card;
+  color: $ink;
+  transition: border-color .15s, box-shadow .15s;
+
+  &::placeholder { color: $ink-3; font-weight: 600; }
+
+  &:focus {
+    outline: none;
+    border-color: $brand-line;
+    box-shadow: 0 0 0 3px $brand-tint;
+  }
+
+  &.err {
+    border-color: $danger-line;
+    box-shadow: 0 0 0 3px $danger-tint;
+  }
+}
+
+// — Секция с заголовком —
+@mixin section-head {
+  font-size: 11px;
+  font-weight: 800;
+  color: $ink-3;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+}
+
+// — Флекс по центру —
+@mixin flex-center($gap: 0) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  @if $gap > 0 { gap: $gap; }
+}
+
+// — Флекс строка (align-items: center) —
+@mixin flex-row($gap: 0, $justify: flex-start) {
+  display: flex;
+  align-items: center;
+  justify-content: $justify;
+  @if $gap > 0 { gap: $gap; }
+}
+
+// — Текст дисплей —
+@mixin font-display($size: 16px, $weight: 700) {
+  font-family: $font-display;
+  font-size: $size;
+  font-weight: $weight;
+}
+
+// — Круглый значок/аватар —
+@mixin avatar-base($size: 32px, $font-size: 12px) {
+  width: $size;
+  height: $size;
+  border-radius: $r-pill;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: $font-size;
+}
+
+// — Бейдж (пилюля) —
+@mixin badge($bg, $color, $border: transparent) {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9px;
+  border-radius: $r-pill;
+  background: $bg;
+  color: $color;
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  @if $border != transparent {
+    border: 1px solid $border;
+  }
+}
+
+// — Скролл без полосы —
+@mixin no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}

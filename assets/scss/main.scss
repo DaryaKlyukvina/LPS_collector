@@ -1,0 +1,366 @@
+// ============================================================
+// LPS Коллекционер — глобальные стили
+// ============================================================
+@use 'vars' as *;
+@use 'mixins' as *;
+
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@500;600;700&family=Nunito:wght@400;500;600;700;800&display=swap');
+
+// ── Сброс ────────────────────────────────────────────────────
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { height: 100%; }
+
+body {
+  font-family: $font-body;
+  background: $bg-page;
+  color: $ink;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+
+body.pawed {
+  background-image: $paw-tile;
+  background-color: $bg-page;
+}
+
+// ── Каркас ───────────────────────────────────────────────────
+.screen {
+  background: $bg-card;
+  border: 1px solid $line;
+  border-radius: $r-xl;
+  overflow: hidden;
+  max-width: 880px;
+  margin: 0 auto;
+  box-shadow: $sh-lg;
+}
+
+// ── Навигация ────────────────────────────────────────────────
+nav {
+  @include flex-row(0, space-between);
+  padding: 14px 22px;
+  border-bottom: 1px solid $line;
+  background: $bg-card;
+}
+
+.logo {
+  @include font-display(16px);
+  color: $brand-deep;
+  @include flex-row(9px);
+  letter-spacing: -.01em;
+
+  .mark {
+    width: 28px;
+    height: 28px;
+    border-radius: 9px;
+    flex-shrink: 0;
+    background: linear-gradient(150deg, #6f64da, #5044b6);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-size: 15px;
+    box-shadow: 0 3px 8px -2px rgba(80,68,182,.55), inset 0 1px 0 rgba(255,255,255,.35);
+  }
+
+  a { color: inherit; text-decoration: none; }
+}
+
+.nav-links {
+  @include flex-row(6px);
+
+  a {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: $ink-2;
+    text-decoration: none;
+    padding: 6px 11px;
+    border-radius: $r-sm;
+    transition: .16s;
+
+    &:hover { color: $brand-deep; background: $brand-tint; }
+  }
+}
+
+.nav-right { @include flex-row(9px); }
+
+// ── Кнопки ───────────────────────────────────────────────────
+.btn {
+  font-family: $font-body;
+  font-size: 13.5px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: $r-sm;
+  cursor: pointer;
+  border: 1px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: .16s;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+
+  i { font-size: 16px; }
+
+  &-primary {
+    background: linear-gradient(150deg, #6f64da, #5a4fc4);
+    color: #fff;
+    border-color: #4d42b0;
+    box-shadow: 0 4px 12px -4px rgba(80,68,182,.6), inset 0 1px 0 rgba(255,255,255,.28);
+
+    &:hover { filter: brightness(1.05); transform: translateY(-1px); }
+  }
+
+  &-ghost {
+    background: $bg-card;
+    color: $ink;
+    border-color: $line-2;
+
+    &:hover { background: $bg-sunken; border-color: $ink-3; }
+  }
+
+  &-soft {
+    background: $brand-tint;
+    color: $brand-deep;
+    border-color: $brand-line;
+
+    &:hover { background: $brand-tint-2; }
+  }
+
+  &-lg { font-size: 14.5px; padding: 11px 22px; border-radius: $r-md; }
+  &-sm { font-size: 12.5px; padding: 6px 12px; }
+}
+
+// ── Аватар ───────────────────────────────────────────────────
+.avatar {
+  @include avatar-base(32px, 12px);
+  background: $brand-tint;
+  border: 1px solid $brand-line;
+  color: $brand;
+
+  &.admin {
+    background: $gold-tint;
+    border-color: #e9c98a;
+    color: $gold-ink;
+  }
+}
+
+// ── Витрина фигурки ──────────────────────────────────────────
+.fig {
+  @include fig-shelf($t-lav); // дефолтный тинт; переопределяется модификаторами ниже
+}
+
+// Генерируем tint-* классы из карты
+@each $name, $color in $tints {
+  .tint-#{$name} { --fig-tint: #{$color}; background:
+    radial-gradient(120% 92% at 50% 16%, rgba(255,255,255,.9), rgba(255,255,255,0) 62%),
+    var(--fig-tint);
+  }
+}
+
+// ── Бейджи редкости ──────────────────────────────────────────
+.rar {
+  font-weight: 700;
+  font-size: 10.5px;
+  letter-spacing: .01em;
+  padding: 4px 9px 4px 8px;
+  border-radius: $r-pill;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  line-height: 1;
+  white-space: nowrap;
+
+  &::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: .65;
+  }
+
+  &-common   { background: #efece4; color: $ink-2; }
+  &-rare     { background: $brand-tint; color: $brand; }
+  &-special  { background: $success-tint; color: $success; }
+  &-exclusive{ background: $gold-tint; color: $gold-ink; }
+}
+
+// ── Теги ─────────────────────────────────────────────────────
+.tag {
+  font-weight: 700;
+  font-size: 11px;
+  padding: 4px 11px;
+  border-radius: $r-pill;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  line-height: 1;
+
+  &-brand { background: $brand-tint; color: $brand; }
+  &-mint  { background: $success-tint; color: $success; }
+  &-gold  { background: $gold-tint; color: $gold-ink; }
+}
+
+// ── Заголовок секции ─────────────────────────────────────────
+.sec-hd { @include section-head; }
+
+// ── Лайк-кнопка ─────────────────────────────────────────────
+.like {
+  font-size: 17px;
+  color: $ink-3;
+  cursor: pointer;
+  transition: .15s;
+  line-height: 1;
+  display: inline-flex;
+
+  &:hover { color: #d0708f; transform: scale(1.12); }
+  &.on    { color: #e0658b; }
+}
+
+// ── Подвал ───────────────────────────────────────────────────
+footer {
+  padding: 16px 22px;
+  border-top: 1px solid $line;
+  @include flex-row(12px, space-between);
+  flex-wrap: wrap;
+  background: $bg-sunken;
+
+  .footer-l { font-size: 12px; color: $ink-3; @include flex-row(7px); }
+
+  .footer-r {
+    @include flex-row(16px);
+
+    a {
+      font-size: 12px;
+      color: $ink-2;
+      text-decoration: none;
+      font-weight: 600;
+
+      &:hover { color: $brand-deep; }
+    }
+  }
+}
+
+.hr { height: 1px; background: $line; border: 0; }
+
+// Карточки без подчёркивания у ссылок
+.pet-card, .pcard, .also-card, .card, .col-card, .wish-card {
+  text-decoration: none;
+  color: inherit;
+}
+
+// ── Чипы фильтров ────────────────────────────────────────────
+.chip {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 11px;
+  border-radius: $r-pill;
+  border: 1px solid $line-2;
+  cursor: pointer;
+  color: $ink-2;
+  background: $bg-card;
+  transition: .14s;
+  user-select: none;
+
+  &:hover { border-color: $brand-line; }
+  &.on    { background: $brand-tint; border-color: $brand-line; color: $brand-deep; }
+}
+
+.chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
+
+// ── Вкладки ──────────────────────────────────────────────────
+.tabs {
+  display: flex;
+  border-bottom: 1px solid $line;
+  padding: 0 22px;
+  gap: 26px;
+}
+
+.tab {
+  padding: 14px 0;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  color: $ink-2;
+  border-bottom: 2px solid transparent;
+  transition: .14s;
+  white-space: nowrap;
+
+  &:hover { color: $ink; }
+
+  &.on { color: $brand; border-bottom-color: $brand; }
+
+  span { font-size: 11.5px; color: $ink-3; font-weight: 700; }
+  &.on span { color: $brand-line; }
+}
+
+// ── Тулбар поиска ────────────────────────────────────────────
+.search-wrap {
+  flex: 1;
+  position: relative;
+
+  i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $ink-3;
+    font-size: 17px;
+    pointer-events: none;
+  }
+
+  input {
+    @include input-base;
+    padding-left: 36px;
+  }
+}
+
+// ── Таблицы (admin) ──────────────────────────────────────────
+.tbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-bottom: 18px;
+
+  th {
+    text-align: left;
+    padding: 9px 11px;
+    border-bottom: 1px solid $line;
+    color: $ink-3;
+    font-weight: 800;
+    font-size: 10.5px;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+  }
+
+  td {
+    padding: 11px;
+    border-bottom: 1px solid $line;
+    color: $ink;
+    vertical-align: middle;
+    font-weight: 600;
+  }
+
+  tbody tr { transition: .12s; &:hover { background: $bg-sunken; } }
+  tr:last-child td { border-bottom: none; }
+}
+
+// Пилюли ролей
+.role-pill {
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: $r-pill;
+  display: inline-block;
+
+  &.r-admin { background: $gold-tint; color: $gold-ink; }
+  &.r-user  { background: $brand-tint; color: $brand; }
+  &.r-guest { background: #efece4; color: $ink-2; }
+}
+
+// ── Утилиты ──────────────────────────────────────────────────
+.muted  { color: $ink-3; }
+.danger { color: $danger; }
+.success{ color: $success; }
