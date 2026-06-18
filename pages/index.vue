@@ -17,7 +17,7 @@
       </div>
       <div class="hero-strip">
         <div v-for="(pet, i) in heroPets" :key="i" class="hs fig" :class="`tint-${pet.tint}`">
-          <span class="glyph">{{ pet.emoji }}</span>
+          <img :src="pet.imageUrl" :alt="pet.name ?? 'LPS'" class="hs-img">
         </div>
       </div>
     </section>
@@ -42,13 +42,13 @@
         class="pet-card" :to="`/pets/${pet.id}`"
       >
         <div class="pet-img fig" :class="`tint-${pet.tint}`">
-          <span class="glyph">{{ pet.emoji }}</span>
+          <img :src="pet.imageUrl" :alt="pet.name" class="pet-img-el">
         </div>
         <div class="pet-body">
           <div class="pet-num">#{{ String(pet.number).padStart(4,'0') }}</div>
           <div class="pet-name">{{ pet.name }}</div>
           <div class="pet-sub">{{ pet.genLabel }} · {{ pet.moldName }}</div>
-          <span class="rar" :class="`rar-${pet.rarity}`">{{ rarityLabel[pet.rarity] }}</span>
+          <span v-if="pet.releaseType" class="rar" :class="pet.releaseType.isExclusive ? 'rar-exclusive' : 'rar-common'">{{ pet.releaseType.label }}</span>
         </div>
       </NuxtLink>
     </div>
@@ -68,22 +68,34 @@
 </template>
 
 <script setup lang="ts">
-const rarityLabel: Record<string, string> = {
-  common: 'Обычная', rare: 'Редкая', special: 'Спец. серия', exclusive: 'Эксклюзив'
+const TINTS = ['lav','mint','peach','butter','pink','sky']
+const SPECIES_TINTS: Record<string, string> = {
+  'Собака': 'lav', 'Кошка': 'mint', 'Кролик': 'peach',
+  'Ёж': 'butter', 'Хомяк': 'pink', 'Лягушка': 'sky',
+}
+function tintFor(pet: any) {
+  return SPECIES_TINTS[pet.mold?.species ?? ''] ?? TINTS[pet.number % TINTS.length]
+}
+function imgFor(pet: any) {
+  return pet.imageUrl ?? `/images/placeholders/pet_thumb.svg`
 }
 
-const heroPets = [
-  { emoji: '🐶', tint: 'lav' }, { emoji: '🐱', tint: 'mint' },
-  { emoji: '🐰', tint: 'peach' }, { emoji: '🦔', tint: 'butter' },
-  { emoji: '🐹', tint: 'pink' }, { emoji: '🐸', tint: 'sky' },
-]
+// Загружаем последние 6 фигурок из API
+const { data: recentData } = await useFetch('/api/pets', { query: { limit: 6, sort: 'number' } })
+const recentPets = computed(() =>
+  (recentData.value?.items ?? []).map((p: any) => ({
+    ...p, tint: tintFor(p), imageUrl: imgFor(p),
+  }))
+)
 
-// TODO: заменить на реальный API вызов
-const recentPets = [
-  { id: '1', number: 3847, name: 'Biscuit', genLabel: 'G7', moldName: 'Такса', rarity: 'special', tint: 'lav', emoji: '🐶' },
-  { id: '2', number: 3801, name: 'Mochi',   genLabel: 'G7', moldName: 'Кошка', rarity: 'common', tint: 'mint', emoji: '🐱' },
-  { id: '3', number: 248,  name: 'Pepper',  genLabel: 'G1', moldName: 'Кролик', rarity: 'rare',  tint: 'peach', emoji: '🐰' },
-  { id: '4', number: 1124, name: 'Spiky',   genLabel: 'G3', moldName: 'Ёжик',  rarity: 'common', tint: 'butter', emoji: '🦔' },
+// Заглушки для hero-полки пока нет реальных фото
+const heroPets = [
+  { tint: 'lav',    imageUrl: '/images/pets/placeholder_dog_300.svg',      name: 'Собака'  },
+  { tint: 'mint',   imageUrl: '/images/pets/placeholder_cat_300.svg',       name: 'Кошка'   },
+  { tint: 'peach',  imageUrl: '/images/pets/placeholder_rabbit_300.svg',    name: 'Кролик'  },
+  { tint: 'butter', imageUrl: '/images/pets/placeholder_hedgehog_300.svg',  name: 'Ёжик'    },
+  { tint: 'pink',   imageUrl: '/images/pets/placeholder_hamster_300.svg',   name: 'Хомяк'   },
+  { tint: 'sky',    imageUrl: '/images/pets/placeholder_frog_300.svg',      name: 'Лягушка' },
 ]
 
 const features = [
@@ -253,4 +265,8 @@ h1 {
   &-t { @include font-display(15px, 600); color: $ink; margin-bottom: 6px; }
   &-d { font-size: 12.5px; color: $ink-2; line-height: 1.6; }
 }
+
+.hs-img { width: 100%; height: 100%; object-fit: contain; padding: 4px; }
+.pet-img-el { width: 100%; height: 100%; object-fit: contain; padding: 6px; }
+
 </style>

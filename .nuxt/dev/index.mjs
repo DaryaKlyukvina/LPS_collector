@@ -3,45 +3,45 @@ import { Server } from 'node:http';
 import { resolve, dirname, join } from 'node:path';
 import nodeCrypto, { scryptSync, timingSafeEqual, randomBytes, createHmac } from 'node:crypto';
 import { parentPort, threadId } from 'node:worker_threads';
-import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, createError, sendRedirect, proxyRequest, getRequestHeader, setResponseHeaders, setResponseStatus, send, getRequestHeaders, setResponseHeader, appendResponseHeader, getRequestURL, getResponseHeader, removeResponseHeader, getQuery as getQuery$1, readBody, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getResponseStatus, getRouterParam, getHeader, getCookie, setCookie, getResponseStatusText } from 'file://C:/Users/user/Downloads/lps-app/node_modules/h3/dist/index.mjs';
-import { escapeHtml } from 'file://C:/Users/user/Downloads/lps-app/node_modules/@vue/shared/dist/shared.cjs.js';
-import viteNodeEntry_mjs from 'file://C:/Users/user/Downloads/lps-app/node_modules/@nuxt/vite-builder/dist/vite-node-entry.mjs';
-import { viteNodeFetch } from 'file://C:/Users/user/Downloads/lps-app/node_modules/@nuxt/vite-builder/dist/vite-node.mjs';
-import pg from 'file://C:/Users/user/Downloads/lps-app/node_modules/pg/esm/index.mjs';
-import { createRenderer, getRequestDependencies, getPreloadLinks, getPrefetchLinks } from 'file://C:/Users/user/Downloads/lps-app/node_modules/vue-bundle-renderer/dist/runtime.mjs';
-import { parseURL, withoutBase, joinURL, getQuery, withQuery, withTrailingSlash, decodePath, withLeadingSlash, withoutTrailingSlash, encodePath, joinRelativeURL } from 'file://C:/Users/user/Downloads/lps-app/node_modules/ufo/dist/index.mjs';
-import { renderToString } from 'file://C:/Users/user/Downloads/lps-app/node_modules/vue/server-renderer/index.mjs';
-import { klona } from 'file://C:/Users/user/Downloads/lps-app/node_modules/klona/dist/index.mjs';
-import defu, { defuFn } from 'file://C:/Users/user/Downloads/lps-app/node_modules/defu/dist/defu.mjs';
-import destr, { destr as destr$1 } from 'file://C:/Users/user/Downloads/lps-app/node_modules/destr/dist/index.mjs';
-import { snakeCase } from 'file://C:/Users/user/Downloads/lps-app/node_modules/scule/dist/index.mjs';
-import { createHead as createHead$1, propsToString, renderSSRHead } from 'file://C:/Users/user/Downloads/lps-app/node_modules/unhead/dist/server.mjs';
-import { stringify, uneval } from 'file://C:/Users/user/Downloads/lps-app/node_modules/devalue/index.js';
-import { isVNode, isRef, toValue } from 'file://C:/Users/user/Downloads/lps-app/node_modules/vue/index.mjs';
-import { DeprecationsPlugin, PromisesPlugin, TemplateParamsPlugin, AliasSortingPlugin } from 'file://C:/Users/user/Downloads/lps-app/node_modules/unhead/dist/plugins.mjs';
-import { createHooks } from 'file://C:/Users/user/Downloads/lps-app/node_modules/hookable/dist/index.mjs';
-import { createFetch, Headers as Headers$1 } from 'file://C:/Users/user/Downloads/lps-app/node_modules/ofetch/dist/node.mjs';
-import { fetchNodeRequestHandler, callNodeRequestHandler } from 'file://C:/Users/user/Downloads/lps-app/node_modules/node-mock-http/dist/index.mjs';
-import { createStorage, prefixStorage } from 'file://C:/Users/user/Downloads/lps-app/node_modules/unstorage/dist/index.mjs';
-import unstorage_47drivers_47fs from 'file://C:/Users/user/Downloads/lps-app/node_modules/unstorage/drivers/fs.mjs';
-import file_58_47_47_47C_58_47Users_47user_47Downloads_47lps_45app_47node_modules_47_64nuxt_47nitro_45server_47dist_47runtime_47utils_47cache_45driver_46js from 'file://C:/Users/user/Downloads/lps-app/node_modules/@nuxt/nitro-server/dist/runtime/utils/cache-driver.js';
-import { digest, hash as hash$1 } from 'file://C:/Users/user/Downloads/lps-app/node_modules/ohash/dist/index.mjs';
-import { toRouteMatcher, createRouter } from 'file://C:/Users/user/Downloads/lps-app/node_modules/radix3/dist/index.mjs';
+import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, createError, sendRedirect, proxyRequest, getRequestHeader, setResponseHeaders, setResponseStatus, send, getRequestHeaders, setResponseHeader, appendResponseHeader, getRequestURL, getResponseHeader, removeResponseHeader, getQuery as getQuery$1, readBody, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getResponseStatus, getRouterParam, getHeader, getCookie, setCookie, deleteCookie, getResponseStatusText } from 'file://C:/Users/user/Downloads/lps-v3/node_modules/h3/dist/index.mjs';
+import { escapeHtml } from 'file://C:/Users/user/Downloads/lps-v3/node_modules/@vue/shared/dist/shared.cjs.js';
+import viteNodeEntry_mjs from 'file://C:/Users/user/Downloads/lps-v3/node_modules/@nuxt/vite-builder/dist/vite-node-entry.mjs';
+import { viteNodeFetch } from 'file://C:/Users/user/Downloads/lps-v3/node_modules/@nuxt/vite-builder/dist/vite-node.mjs';
+import pg from 'file://C:/Users/user/Downloads/lps-v3/node_modules/pg/esm/index.mjs';
+import { createRenderer, getRequestDependencies, getPreloadLinks, getPrefetchLinks } from 'file://C:/Users/user/Downloads/lps-v3/node_modules/vue-bundle-renderer/dist/runtime.mjs';
+import { parseURL, withoutBase, joinURL, getQuery, withQuery, withTrailingSlash, decodePath, withLeadingSlash, withoutTrailingSlash, encodePath, joinRelativeURL } from 'file://C:/Users/user/Downloads/lps-v3/node_modules/ufo/dist/index.mjs';
+import { renderToString } from 'file://C:/Users/user/Downloads/lps-v3/node_modules/vue/server-renderer/index.mjs';
+import { klona } from 'file://C:/Users/user/Downloads/lps-v3/node_modules/klona/dist/index.mjs';
+import defu, { defuFn } from 'file://C:/Users/user/Downloads/lps-v3/node_modules/defu/dist/defu.mjs';
+import destr, { destr as destr$1 } from 'file://C:/Users/user/Downloads/lps-v3/node_modules/destr/dist/index.mjs';
+import { snakeCase } from 'file://C:/Users/user/Downloads/lps-v3/node_modules/scule/dist/index.mjs';
+import { createHead as createHead$1, propsToString, renderSSRHead } from 'file://C:/Users/user/Downloads/lps-v3/node_modules/unhead/dist/server.mjs';
+import { stringify, uneval } from 'file://C:/Users/user/Downloads/lps-v3/node_modules/devalue/index.js';
+import { isVNode, isRef, toValue } from 'file://C:/Users/user/Downloads/lps-v3/node_modules/vue/index.mjs';
+import { DeprecationsPlugin, PromisesPlugin, TemplateParamsPlugin, AliasSortingPlugin } from 'file://C:/Users/user/Downloads/lps-v3/node_modules/unhead/dist/plugins.mjs';
+import { createHooks } from 'file://C:/Users/user/Downloads/lps-v3/node_modules/hookable/dist/index.mjs';
+import { createFetch, Headers as Headers$1 } from 'file://C:/Users/user/Downloads/lps-v3/node_modules/ofetch/dist/node.mjs';
+import { fetchNodeRequestHandler, callNodeRequestHandler } from 'file://C:/Users/user/Downloads/lps-v3/node_modules/node-mock-http/dist/index.mjs';
+import { createStorage, prefixStorage } from 'file://C:/Users/user/Downloads/lps-v3/node_modules/unstorage/dist/index.mjs';
+import unstorage_47drivers_47fs from 'file://C:/Users/user/Downloads/lps-v3/node_modules/unstorage/drivers/fs.mjs';
+import file_58_47_47_47C_58_47Users_47user_47Downloads_47lps_45v3_47node_modules_47_64nuxt_47nitro_45server_47dist_47runtime_47utils_47cache_45driver_46js from 'file://C:/Users/user/Downloads/lps-v3/node_modules/@nuxt/nitro-server/dist/runtime/utils/cache-driver.js';
+import { digest, hash as hash$1 } from 'file://C:/Users/user/Downloads/lps-v3/node_modules/ohash/dist/index.mjs';
+import { toRouteMatcher, createRouter } from 'file://C:/Users/user/Downloads/lps-v3/node_modules/radix3/dist/index.mjs';
 import { readFile } from 'node:fs/promises';
-import consola, { consola as consola$1 } from 'file://C:/Users/user/Downloads/lps-app/node_modules/consola/dist/index.mjs';
-import { ErrorParser } from 'file://C:/Users/user/Downloads/lps-app/node_modules/youch-core/build/index.js';
-import { Youch } from 'file://C:/Users/user/Downloads/lps-app/node_modules/youch/build/index.js';
-import { SourceMapConsumer } from 'file://C:/Users/user/Downloads/lps-app/node_modules/source-map/source-map.js';
+import consola, { consola as consola$1 } from 'file://C:/Users/user/Downloads/lps-v3/node_modules/consola/dist/index.mjs';
+import { ErrorParser } from 'file://C:/Users/user/Downloads/lps-v3/node_modules/youch-core/build/index.js';
+import { Youch } from 'file://C:/Users/user/Downloads/lps-v3/node_modules/youch/build/index.js';
+import { SourceMapConsumer } from 'file://C:/Users/user/Downloads/lps-v3/node_modules/source-map/source-map.js';
 import { AsyncLocalStorage } from 'node:async_hooks';
-import { getContext } from 'file://C:/Users/user/Downloads/lps-app/node_modules/unctx/dist/index.mjs';
-import { captureRawStackTrace, parseRawStackTrace } from 'file://C:/Users/user/Downloads/lps-app/node_modules/errx/dist/index.js';
-import _wH6JrtIxmaSoA8lCPWFnE9z4lQeXW6H5z3l5aymEQw from 'file://C:/Users/user/Downloads/lps-app/node_modules/@nuxt/vite-builder/dist/fix-stacktrace.mjs';
+import { getContext } from 'file://C:/Users/user/Downloads/lps-v3/node_modules/unctx/dist/index.mjs';
+import { captureRawStackTrace, parseRawStackTrace } from 'file://C:/Users/user/Downloads/lps-v3/node_modules/errx/dist/index.js';
+import _wH6JrtIxmaSoA8lCPWFnE9z4lQeXW6H5z3l5aymEQw from 'file://C:/Users/user/Downloads/lps-v3/node_modules/@nuxt/vite-builder/dist/fix-stacktrace.mjs';
 import { promises } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { dirname as dirname$1, resolve as resolve$1 } from 'file://C:/Users/user/Downloads/lps-app/node_modules/pathe/dist/index.mjs';
-import { walkResolver } from 'file://C:/Users/user/Downloads/lps-app/node_modules/unhead/dist/utils.mjs';
+import { dirname as dirname$1, resolve as resolve$1 } from 'file://C:/Users/user/Downloads/lps-v3/node_modules/pathe/dist/index.mjs';
+import { walkResolver } from 'file://C:/Users/user/Downloads/lps-v3/node_modules/unhead/dist/utils.mjs';
 
-const serverAssets = [{"baseName":"server","dir":"C:/Users/user/Downloads/lps-app/server/assets"}];
+const serverAssets = [{"baseName":"server","dir":"C:/Users/user/Downloads/lps-v3/server/assets"}];
 
 const assets$1 = createStorage();
 
@@ -53,12 +53,12 @@ const storage = createStorage({});
 
 storage.mount('/assets', assets$1);
 
-storage.mount('root', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"C:/Users/user/Downloads/lps-app","watchOptions":{"ignored":[null]}}));
-storage.mount('src', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"C:/Users/user/Downloads/lps-app/server","watchOptions":{"ignored":[null]}}));
-storage.mount('cache:nuxt:payload', file_58_47_47_47C_58_47Users_47user_47Downloads_47lps_45app_47node_modules_47_64nuxt_47nitro_45server_47dist_47runtime_47utils_47cache_45driver_46js({"driver":"file:///C:/Users/user/Downloads/lps-app/node_modules/@nuxt/nitro-server/dist/runtime/utils/cache-driver.js","base":"C:/Users/user/Downloads/lps-app/.nuxt/cache/nuxt/payload"}));
-storage.mount('build', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"C:/Users/user/Downloads/lps-app/.nuxt"}));
-storage.mount('cache', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"C:/Users/user/Downloads/lps-app/.nuxt/cache"}));
-storage.mount('data', unstorage_47drivers_47fs({"driver":"fs","base":"C:/Users/user/Downloads/lps-app/.data/kv"}));
+storage.mount('root', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"C:/Users/user/Downloads/lps-v3","watchOptions":{"ignored":[null]}}));
+storage.mount('src', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"C:/Users/user/Downloads/lps-v3/server","watchOptions":{"ignored":[null]}}));
+storage.mount('cache:nuxt:payload', file_58_47_47_47C_58_47Users_47user_47Downloads_47lps_45v3_47node_modules_47_64nuxt_47nitro_45server_47dist_47runtime_47utils_47cache_45driver_46js({"driver":"file:///C:/Users/user/Downloads/lps-v3/node_modules/@nuxt/nitro-server/dist/runtime/utils/cache-driver.js","base":"C:/Users/user/Downloads/lps-v3/.nuxt/cache/nuxt/payload"}));
+storage.mount('build', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"C:/Users/user/Downloads/lps-v3/.nuxt"}));
+storage.mount('cache', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"C:/Users/user/Downloads/lps-v3/.nuxt/cache"}));
+storage.mount('data', unstorage_47drivers_47fs({"driver":"fs","base":"C:/Users/user/Downloads/lps-v3/.data/kv"}));
 
 function useStorage(base = "") {
   return base ? prefixStorage(storage, base) : storage;
@@ -656,8 +656,8 @@ const _inlineRuntimeConfig = {
   "public": {
     "appName": "LPS Коллекционер"
   },
-  "jwtSecret": "CHANGE_ME_IN_PRODUCTION",
-  "dbUrl": "postgresql://lps_user:lps_pass@localhost:5432/lps_db"
+  "jwtSecret": "lps-collector-super-secret-key-2026-lol",
+  "dbUrl": "postgresql://postgres:12345@localhost:5432/lps_db"
 };
 const envOptions = {
   prefix: "NITRO_",
@@ -2052,13 +2052,13 @@ if (!window.__NUXT_DEVTOOLS_TIME_METRIC__) {
 window.__NUXT_DEVTOOLS_TIME_METRIC__.appInit = Date.now()
 `;
 
-const _Fy9n8L1kDSXU_GTWtb3L6pFdmeLGqMtsMTWaY9WjM = (function(nitro) {
+const _pR8WDU1Akne59t3rXvSO9U6nF28AK6hxwotYWkvA2m4 = (function(nitro) {
   nitro.hooks.hook("render:html", (htmlContext) => {
     htmlContext.head.push(`<script>${script}<\/script>`);
   });
 });
 
-const rootDir = "C:/Users/user/Downloads/lps-app";
+const rootDir = "C:/Users/user/Downloads/lps-v3";
 
 const appHead = {"meta":[{"name":"viewport","content":"width=device-width, initial-scale=1"},{"charset":"utf-8"}],"link":[],"style":[],"script":[],"noscript":[]};
 
@@ -2084,7 +2084,7 @@ const asyncContext = getContext("nuxt-dev", {
 	asyncContext: true,
 	AsyncLocalStorage
 });
-const _0y6WHsgEjT58qocCAAxhqhVVZpJp5RLaUWLRao0E9iE = (nitroApp) => {
+const _gZOTwdHeHYRTr63FrCIZuXHqHoL0kqT_lwg8kFYE = (nitroApp) => {
 	const handler = nitroApp.h3App.handler;
 	nitroApp.h3App.handler = (event) => {
 		return asyncContext.callAsync({
@@ -2160,8 +2160,8 @@ function onConsoleLog(callback) {
 }
 
 const plugins = [
-  _Fy9n8L1kDSXU_GTWtb3L6pFdmeLGqMtsMTWaY9WjM,
-_0y6WHsgEjT58qocCAAxhqhVVZpJp5RLaUWLRao0E9iE,
+  _pR8WDU1Akne59t3rXvSO9U6nF28AK6hxwotYWkvA2m4,
+_gZOTwdHeHYRTr63FrCIZuXHqHoL0kqT_lwg8kFYE,
 _wH6JrtIxmaSoA8lCPWFnE9z4lQeXW6H5z3l5aymEQw
 ];
 
@@ -2190,7 +2190,7 @@ function getAsset (id) {
 
 const METHODS = /* @__PURE__ */ new Set(["HEAD", "GET"]);
 const EncodingMap = { gzip: ".gz", br: ".br" };
-const _AQT_at = eventHandler((event) => {
+const _WNW4Ve = eventHandler((event) => {
   if (event.method && !METHODS.has(event.method)) {
     return;
   }
@@ -2696,45 +2696,71 @@ async function getIslandContext(event) {
 	};
 }
 
-const _lazy_xBQyHh = () => Promise.resolve().then(function () { return login_post$1; });
-const _lazy_PMg1Ph = () => Promise.resolve().then(function () { return me_get$1; });
-const _lazy_xS2cVQ = () => Promise.resolve().then(function () { return register_post$1; });
-const _lazy_Lt1Da1 = () => Promise.resolve().then(function () { return _id__delete$5; });
-const _lazy_4Z8atm = () => Promise.resolve().then(function () { return _id__patch$3; });
-const _lazy_giACxX = () => Promise.resolve().then(function () { return index_get$7; });
-const _lazy_6M2JZC = () => Promise.resolve().then(function () { return index_post$5; });
-const _lazy_iUnRkF = () => Promise.resolve().then(function () { return _id__get$1; });
-const _lazy_JVwSZ1 = () => Promise.resolve().then(function () { return index_get$5; });
-const _lazy_rbs0dR = () => Promise.resolve().then(function () { return index_post$3; });
-const _lazy__pRgR8 = () => Promise.resolve().then(function () { return _id__delete$3; });
-const _lazy_ktYRBj = () => Promise.resolve().then(function () { return _id__patch$1; });
-const _lazy_zfP83r = () => Promise.resolve().then(function () { return index_get$3; });
-const _lazy_Frygga = () => Promise.resolve().then(function () { return _id__delete$1; });
-const _lazy_dQw4hb = () => Promise.resolve().then(function () { return index_get$1; });
-const _lazy_RrGpYC = () => Promise.resolve().then(function () { return index_post$1; });
-const _lazy_F2wjb1 = () => Promise.resolve().then(function () { return renderer; });
+const _lazy_VbPFdw = () => Promise.resolve().then(function () { return login_post$1; });
+const _lazy_A_qYNO = () => Promise.resolve().then(function () { return logout_post$1; });
+const _lazy_6fQCHO = () => Promise.resolve().then(function () { return me_get$1; });
+const _lazy_hs2t21 = () => Promise.resolve().then(function () { return register_post$1; });
+const _lazy_5X3caI = () => Promise.resolve().then(function () { return _userId__get$1; });
+const _lazy_VBhzUn = () => Promise.resolve().then(function () { return _userId__post$1; });
+const _lazy_BDiv6P = () => Promise.resolve().then(function () { return index_get$9; });
+const _lazy_TlJ97u = () => Promise.resolve().then(function () { return _id__delete$9; });
+const _lazy_hPsNVa = () => Promise.resolve().then(function () { return _id__patch$7; });
+const _lazy_a9qNbl = () => Promise.resolve().then(function () { return index_get$7; });
+const _lazy_fiaB7e = () => Promise.resolve().then(function () { return index_post$9; });
+const _lazy_oib8Al = () => Promise.resolve().then(function () { return _id__delete$7; });
+const _lazy_EoBLEE = () => Promise.resolve().then(function () { return index_post$7; });
+const _lazy_P8fAj5 = () => Promise.resolve().then(function () { return _id__delete$5; });
+const _lazy_1MEI5p = () => Promise.resolve().then(function () { return _id__get$3; });
+const _lazy_4Iq7Pn = () => Promise.resolve().then(function () { return _id__patch$5; });
+const _lazy_MxHTyh = () => Promise.resolve().then(function () { return index_get$5; });
+const _lazy_7_767G = () => Promise.resolve().then(function () { return index_post$5; });
+const _lazy_hxzYUx = () => Promise.resolve().then(function () { return _id__patch$3; });
+const _lazy_UAN7nN = () => Promise.resolve().then(function () { return index_post$3; });
+const _lazy_u3hyvw = () => Promise.resolve().then(function () { return _id__delete$3; });
+const _lazy_jEENcx = () => Promise.resolve().then(function () { return _id__get$1; });
+const _lazy_3c7jJr = () => Promise.resolve().then(function () { return _id__patch$1; });
+const _lazy_tDBTXz = () => Promise.resolve().then(function () { return collection_get$1; });
+const _lazy_rVqB0D = () => Promise.resolve().then(function () { return index_get$3; });
+const _lazy_U1BcrU = () => Promise.resolve().then(function () { return me_patch$1; });
+const _lazy_O3pIB8 = () => Promise.resolve().then(function () { return _id__delete$1; });
+const _lazy_5EFVDq = () => Promise.resolve().then(function () { return index_get$1; });
+const _lazy_kBYzoa = () => Promise.resolve().then(function () { return index_post$1; });
+const _lazy_NmGB8a = () => Promise.resolve().then(function () { return renderer; });
 
 const handlers = [
-  { route: '', handler: _AQT_at, lazy: false, middleware: true, method: undefined },
-  { route: '/api/auth/login', handler: _lazy_xBQyHh, lazy: true, middleware: false, method: "post" },
-  { route: '/api/auth/me', handler: _lazy_PMg1Ph, lazy: true, middleware: false, method: "get" },
-  { route: '/api/auth/register', handler: _lazy_xS2cVQ, lazy: true, middleware: false, method: "post" },
-  { route: '/api/collection/:id', handler: _lazy_Lt1Da1, lazy: true, middleware: false, method: "delete" },
-  { route: '/api/collection/:id', handler: _lazy_4Z8atm, lazy: true, middleware: false, method: "patch" },
-  { route: '/api/collection', handler: _lazy_giACxX, lazy: true, middleware: false, method: "get" },
-  { route: '/api/collection', handler: _lazy_6M2JZC, lazy: true, middleware: false, method: "post" },
-  { route: '/api/pets/:id', handler: _lazy_iUnRkF, lazy: true, middleware: false, method: "get" },
-  { route: '/api/pets', handler: _lazy_JVwSZ1, lazy: true, middleware: false, method: "get" },
-  { route: '/api/pets', handler: _lazy_rbs0dR, lazy: true, middleware: false, method: "post" },
-  { route: '/api/users/:id', handler: _lazy__pRgR8, lazy: true, middleware: false, method: "delete" },
-  { route: '/api/users/:id', handler: _lazy_ktYRBj, lazy: true, middleware: false, method: "patch" },
-  { route: '/api/users', handler: _lazy_zfP83r, lazy: true, middleware: false, method: "get" },
-  { route: '/api/wishlist/:id', handler: _lazy_Frygga, lazy: true, middleware: false, method: "delete" },
-  { route: '/api/wishlist', handler: _lazy_dQw4hb, lazy: true, middleware: false, method: "get" },
-  { route: '/api/wishlist', handler: _lazy_RrGpYC, lazy: true, middleware: false, method: "post" },
-  { route: '/__nuxt_error', handler: _lazy_F2wjb1, lazy: true, middleware: false, method: undefined },
+  { route: '', handler: _WNW4Ve, lazy: false, middleware: true, method: undefined },
+  { route: '/api/auth/login', handler: _lazy_VbPFdw, lazy: true, middleware: false, method: "post" },
+  { route: '/api/auth/logout', handler: _lazy_A_qYNO, lazy: true, middleware: false, method: "post" },
+  { route: '/api/auth/me', handler: _lazy_6fQCHO, lazy: true, middleware: false, method: "get" },
+  { route: '/api/auth/register', handler: _lazy_hs2t21, lazy: true, middleware: false, method: "post" },
+  { route: '/api/chat/:userId', handler: _lazy_5X3caI, lazy: true, middleware: false, method: "get" },
+  { route: '/api/chat/:userId', handler: _lazy_VBhzUn, lazy: true, middleware: false, method: "post" },
+  { route: '/api/chat', handler: _lazy_BDiv6P, lazy: true, middleware: false, method: "get" },
+  { route: '/api/collection/:id', handler: _lazy_TlJ97u, lazy: true, middleware: false, method: "delete" },
+  { route: '/api/collection/:id', handler: _lazy_hPsNVa, lazy: true, middleware: false, method: "patch" },
+  { route: '/api/collection', handler: _lazy_a9qNbl, lazy: true, middleware: false, method: "get" },
+  { route: '/api/collection', handler: _lazy_fiaB7e, lazy: true, middleware: false, method: "post" },
+  { route: '/api/pet-images/:id', handler: _lazy_oib8Al, lazy: true, middleware: false, method: "delete" },
+  { route: '/api/pet-images', handler: _lazy_EoBLEE, lazy: true, middleware: false, method: "post" },
+  { route: '/api/pets/:id', handler: _lazy_P8fAj5, lazy: true, middleware: false, method: "delete" },
+  { route: '/api/pets/:id', handler: _lazy_1MEI5p, lazy: true, middleware: false, method: "get" },
+  { route: '/api/pets/:id', handler: _lazy_4Iq7Pn, lazy: true, middleware: false, method: "patch" },
+  { route: '/api/pets', handler: _lazy_MxHTyh, lazy: true, middleware: false, method: "get" },
+  { route: '/api/pets', handler: _lazy_7_767G, lazy: true, middleware: false, method: "post" },
+  { route: '/api/trades/:id', handler: _lazy_hxzYUx, lazy: true, middleware: false, method: "patch" },
+  { route: '/api/trades', handler: _lazy_UAN7nN, lazy: true, middleware: false, method: "post" },
+  { route: '/api/users/:id', handler: _lazy_u3hyvw, lazy: true, middleware: false, method: "delete" },
+  { route: '/api/users/:id', handler: _lazy_jEENcx, lazy: true, middleware: false, method: "get" },
+  { route: '/api/users/:id', handler: _lazy_3c7jJr, lazy: true, middleware: false, method: "patch" },
+  { route: '/api/users/:id/collection', handler: _lazy_tDBTXz, lazy: true, middleware: false, method: "get" },
+  { route: '/api/users', handler: _lazy_rVqB0D, lazy: true, middleware: false, method: "get" },
+  { route: '/api/users/me', handler: _lazy_U1BcrU, lazy: true, middleware: false, method: "patch" },
+  { route: '/api/wishlist/:id', handler: _lazy_O3pIB8, lazy: true, middleware: false, method: "delete" },
+  { route: '/api/wishlist', handler: _lazy_5EFVDq, lazy: true, middleware: false, method: "get" },
+  { route: '/api/wishlist', handler: _lazy_kBYzoa, lazy: true, middleware: false, method: "post" },
+  { route: '/__nuxt_error', handler: _lazy_NmGB8a, lazy: true, middleware: false, method: undefined },
   { route: '/__nuxt_island/**', handler: handler$1, lazy: false, middleware: false, method: undefined },
-  { route: '/**', handler: _lazy_F2wjb1, lazy: true, middleware: false, method: undefined }
+  { route: '/**', handler: _lazy_NmGB8a, lazy: true, middleware: false, method: undefined }
 ];
 
 function createNitroApp() {
@@ -3215,6 +3241,21 @@ const login_post$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProper
   default: login_post
 }, Symbol.toStringTag, { value: 'Module' }));
 
+const logout_post = defineEventHandler((event) => {
+  deleteCookie(event, "auth_token", {
+    httpOnly: true,
+    secure: false,
+    sameSite: "lax",
+    path: "/"
+  });
+  return { ok: true };
+});
+
+const logout_post$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: logout_post
+}, Symbol.toStringTag, { value: 'Module' }));
+
 const me_get = defineEventHandler(async (event) => {
   const payload = requireAuth(event);
   const user = await queryOne(
@@ -3269,7 +3310,219 @@ const register_post$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.definePro
   default: register_post
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const _id__delete$4 = defineEventHandler(async (event) => {
+const _userId__get = defineEventHandler(async (event) => {
+  var _a;
+  const { sub: myId } = requireAuth(event);
+  const partnerId = getRouterParam(event, "userId");
+  if (myId === partnerId) {
+    throw createError({ statusCode: 400, message: "\u041D\u0435\u043B\u044C\u0437\u044F \u043E\u0442\u043A\u0440\u044B\u0442\u044C \u0434\u0438\u0430\u043B\u043E\u0433 \u0441 \u0441\u043E\u0431\u043E\u0439" });
+  }
+  const [u1, u2] = [myId, partnerId].sort();
+  let conv = await queryOne(
+    "SELECT id FROM conversations WHERE user_1_id = $1 AND user_2_id = $2",
+    [u1, u2]
+  );
+  if (!conv) {
+    const rows = await query(
+      "INSERT INTO conversations (user_1_id, user_2_id) VALUES ($1, $2) RETURNING id",
+      [u1, u2]
+    );
+    conv = rows[0];
+  }
+  const convId = conv.id;
+  await query(
+    `UPDATE messages SET is_read = TRUE
+     WHERE conversation_id = $1 AND sender_id != $2 AND is_read = FALSE`,
+    [convId, myId]
+  );
+  const messages = await query(
+    `SELECT
+       m.id, m.body, m.sender_id, m.is_read, m.created_at,
+       -- \u043F\u0440\u0438\u043A\u0440\u0435\u043F\u043B\u0451\u043D\u043D\u0430\u044F \u0444\u0438\u0433\u0443\u0440\u043A\u0430
+       p.id      AS pet_id,
+       p.number  AS pet_number,
+       p.name    AS pet_name,
+       p.image_url AS pet_image,
+       -- \u043F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u0435 \u043E\u0431\u043C\u0435\u043D\u0430 (\u0435\u0441\u043B\u0438 \u0435\u0441\u0442\u044C)
+       t.id           AS trade_id,
+       t.status       AS trade_status,
+       t.note         AS trade_note,
+       op.id          AS offered_id,
+       op.number      AS offered_number,
+       op.name        AS offered_name,
+       op.image_url   AS offered_image,
+       wp.id          AS wanted_id,
+       wp.number      AS wanted_number,
+       wp.name        AS wanted_name,
+       wp.image_url   AS wanted_image
+     FROM messages m
+     LEFT JOIN pets p ON p.id = m.pet_id
+     LEFT JOIN trade_offers t ON t.message_id = m.id
+     LEFT JOIN pets op ON op.id = t.offered_pet_id
+     LEFT JOIN pets wp ON wp.id = t.wanted_pet_id
+     WHERE m.conversation_id = $1
+     ORDER BY m.created_at ASC
+     LIMIT 50`,
+    [convId]
+  );
+  const partner = await queryOne(
+    "SELECT id, username, avatar_url FROM users WHERE id = $1",
+    [partnerId]
+  );
+  if (!partner) throw createError({ statusCode: 404, message: "\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D" });
+  return {
+    conversationId: convId,
+    partner: {
+      id: partner.id,
+      username: partner.username,
+      avatarUrl: (_a = partner.avatar_url) != null ? _a : "/images/avatars/default_avatar.svg"
+    },
+    messages: messages.map((m) => {
+      var _a2, _b, _c;
+      return {
+        id: m.id,
+        body: m.body,
+        isMine: m.sender_id === myId,
+        isRead: m.is_read,
+        createdAt: m.created_at,
+        // прикреплённая фигурка (упоминание)
+        pet: m.pet_id ? {
+          id: m.pet_id,
+          number: m.pet_number,
+          name: m.pet_name,
+          imageUrl: (_a2 = m.pet_image) != null ? _a2 : "/images/placeholders/pet_thumb.svg"
+        } : null,
+        // предложение обмена
+        trade: m.trade_id ? {
+          id: m.trade_id,
+          status: m.trade_status,
+          note: m.trade_note,
+          offeredPet: {
+            id: m.offered_id,
+            number: m.offered_number,
+            name: m.offered_name,
+            imageUrl: (_b = m.offered_image) != null ? _b : "/images/placeholders/pet_thumb.svg"
+          },
+          wantedPet: {
+            id: m.wanted_id,
+            number: m.wanted_number,
+            name: m.wanted_name,
+            imageUrl: (_c = m.wanted_image) != null ? _c : "/images/placeholders/pet_thumb.svg"
+          }
+        } : null
+      };
+    })
+  };
+});
+
+const _userId__get$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: _userId__get
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const _userId__post = defineEventHandler(async (event) => {
+  var _a, _b, _c, _d;
+  const { sub: myId } = requireAuth(event);
+  const partnerId = getRouterParam(event, "userId");
+  const body = await readBody(event);
+  if (myId === partnerId) {
+    throw createError({ statusCode: 400, message: "\u041D\u0435\u043B\u044C\u0437\u044F \u043D\u0430\u043F\u0438\u0441\u0430\u0442\u044C \u0441\u0430\u043C\u043E\u043C\u0443 \u0441\u0435\u0431\u0435" });
+  }
+  if (!((_a = body == null ? void 0 : body.body) == null ? void 0 : _a.trim()) && !(body == null ? void 0 : body.petId)) {
+    throw createError({ statusCode: 400, message: "\u0421\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u0435 \u043D\u0435 \u043C\u043E\u0436\u0435\u0442 \u0431\u044B\u0442\u044C \u043F\u0443\u0441\u0442\u044B\u043C" });
+  }
+  const [u1, u2] = [myId, partnerId].sort();
+  let conv = await queryOne(
+    "SELECT id FROM conversations WHERE user_1_id = $1 AND user_2_id = $2",
+    [u1, u2]
+  );
+  if (!conv) {
+    const rows2 = await query(
+      "INSERT INTO conversations (user_1_id, user_2_id) VALUES ($1,$2) RETURNING id",
+      [u1, u2]
+    );
+    conv = rows2[0];
+  }
+  const rows = await query(
+    `INSERT INTO messages (conversation_id, sender_id, body, pet_id)
+     VALUES ($1, $2, $3, $4)
+     RETURNING id, created_at`,
+    [conv.id, myId, (_c = (_b = body.body) == null ? void 0 : _b.trim()) != null ? _c : null, (_d = body.petId) != null ? _d : null]
+  );
+  setResponseStatus(event, 201);
+  return { id: rows[0].id, createdAt: rows[0].created_at };
+});
+
+const _userId__post$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: _userId__post
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const index_get$8 = defineEventHandler(async (event) => {
+  const { sub: userId } = requireAuth(event);
+  const rows = await query(
+    `SELECT
+       c.id,
+       c.created_at,
+       -- \u0441\u043E\u0431\u0435\u0441\u0435\u0434\u043D\u0438\u043A
+       u.id         AS partner_id,
+       u.username   AS partner_username,
+       u.avatar_url AS partner_avatar,
+       -- \u043F\u043E\u0441\u043B\u0435\u0434\u043D\u0435\u0435 \u0441\u043E\u043E\u0431\u0449\u0435\u043D\u0438\u0435
+       m.id         AS last_msg_id,
+       m.body       AS last_msg_body,
+       m.sender_id  AS last_msg_sender,
+       m.created_at AS last_msg_at,
+       -- \u043D\u0435\u043F\u0440\u043E\u0447\u0438\u0442\u0430\u043D\u043D\u044B\u0435 (\u043E\u0442 \u0441\u043E\u0431\u0435\u0441\u0435\u0434\u043D\u0438\u043A\u0430, \u043D\u0435 \u043F\u0440\u043E\u0447\u0438\u0442\u0430\u043D\u043D\u044B\u0435 \u043C\u043D\u043E\u0439)
+       (
+         SELECT COUNT(*) FROM messages
+         WHERE conversation_id = c.id
+           AND sender_id != $1
+           AND is_read = FALSE
+       ) AS unread_count
+     FROM conversations c
+     JOIN users u ON u.id = CASE
+       WHEN c.user_1_id = $1 THEN c.user_2_id
+       ELSE c.user_1_id
+     END
+     LEFT JOIN LATERAL (
+       SELECT id, body, sender_id, created_at
+       FROM messages
+       WHERE conversation_id = c.id
+       ORDER BY created_at DESC
+       LIMIT 1
+     ) m ON TRUE
+     WHERE c.user_1_id = $1 OR c.user_2_id = $1
+     ORDER BY COALESCE(m.created_at, c.created_at) DESC`,
+    [userId]
+  );
+  return rows.map((r) => {
+    var _a;
+    return {
+      id: r.id,
+      createdAt: r.created_at,
+      partner: {
+        id: r.partner_id,
+        username: r.partner_username,
+        avatarUrl: (_a = r.partner_avatar) != null ? _a : "/images/avatars/default_avatar.svg"
+      },
+      lastMessage: r.last_msg_id ? {
+        id: r.last_msg_id,
+        body: r.last_msg_body,
+        isMine: r.last_msg_sender === userId,
+        createdAt: r.last_msg_at
+      } : null,
+      unreadCount: Number(r.unread_count)
+    };
+  });
+});
+
+const index_get$9 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: index_get$8
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const _id__delete$8 = defineEventHandler(async (event) => {
   const payload = requireAuth(event);
   const id = getRouterParam(event, "id");
   const item = await queryOne(
@@ -3281,12 +3534,12 @@ const _id__delete$4 = defineEventHandler(async (event) => {
   return { ok: true };
 });
 
-const _id__delete$5 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const _id__delete$9 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: _id__delete$4
+  default: _id__delete$8
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const _id__patch$2 = defineEventHandler(async (event) => {
+const _id__patch$6 = defineEventHandler(async (event) => {
   var _a, _b;
   const payload = requireAuth(event);
   const id = getRouterParam(event, "id");
@@ -3306,9 +3559,9 @@ const _id__patch$2 = defineEventHandler(async (event) => {
   return { ok: true };
 });
 
-const _id__patch$3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const _id__patch$7 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: _id__patch$2
+  default: _id__patch$6
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const index_get$6 = defineEventHandler(async (event) => {
@@ -3316,14 +3569,17 @@ const index_get$6 = defineEventHandler(async (event) => {
   const rows = await query(
     `SELECT
        ci.id, ci.note, ci.condition, ci.acquired_at, ci.added_at,
-       p.id AS pet_id, p.number, p.name, p.rarity,
+       p.id AS pet_id, p.number, p.name,
        p.has_flocking, p.has_magnet, p.image_url,
+       p.release_type_id,
        m.name AS mold_name, m.species,
-       g.label AS gen_label, g.number AS gen_number
+       g.label AS gen_label, g.number AS gen_number,
+       rt.slug AS release_type_slug, rt.label AS release_type_label, rt.is_exclusive
      FROM collection_items ci
      JOIN pets p        ON p.id = ci.pet_id
      JOIN molds m       ON m.id = p.mold_id
      JOIN generations g ON g.id = p.generation_id
+     LEFT JOIN release_types rt ON rt.id = p.release_type_id
      WHERE ci.user_id = $1
      ORDER BY ci.added_at DESC`,
     [payload.sub]
@@ -3338,10 +3594,10 @@ const index_get$6 = defineEventHandler(async (event) => {
       id: r.pet_id,
       number: r.number,
       name: r.name,
-      rarity: r.rarity,
       hasFlocking: r.has_flocking,
       hasMagnet: r.has_magnet,
       imageUrl: r.image_url,
+      releaseType: r.release_type_id ? { id: r.release_type_id, slug: r.release_type_slug, label: r.release_type_label, isExclusive: r.is_exclusive } : null,
       mold: { name: r.mold_name, species: r.species },
       generation: { label: r.gen_label, number: r.gen_number }
     }
@@ -3353,7 +3609,7 @@ const index_get$7 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.definePropert
   default: index_get$6
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const index_post$4 = defineEventHandler(async (event) => {
+const index_post$8 = defineEventHandler(async (event) => {
   var _a, _b;
   const payload = requireAuth(event);
   const body = await readBody(event);
@@ -3372,22 +3628,101 @@ const index_post$4 = defineEventHandler(async (event) => {
   return { id: rows[0].id };
 });
 
-const index_post$5 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const index_post$9 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: index_post$4
+  default: index_post$8
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const _id__get = defineEventHandler(async (event) => {
+const _id__delete$6 = defineEventHandler(async (event) => {
+  var _a;
+  requireRole(event, "admin");
+  const id = getRouterParam(event, "id");
+  const img = await queryOne(
+    "SELECT id, is_primary, pet_id FROM pet_images WHERE id = $1",
+    [id]
+  );
+  if (!img) throw createError({ statusCode: 404, message: "\u0418\u0437\u043E\u0431\u0440\u0430\u0436\u0435\u043D\u0438\u0435 \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D\u043E" });
+  await queryOne("DELETE FROM pet_images WHERE id = $1", [id]);
+  if (img.is_primary) {
+    const next = await queryOne(
+      "SELECT url FROM pet_images WHERE pet_id = $1 ORDER BY sort_order ASC LIMIT 1",
+      [img.pet_id]
+    );
+    await queryOne(
+      "UPDATE pets SET image_url = $1 WHERE id = $2",
+      [(_a = next == null ? void 0 : next.url) != null ? _a : null, img.pet_id]
+    );
+    if (next) {
+      await queryOne(
+        "UPDATE pet_images SET is_primary = TRUE WHERE url = $1 AND pet_id = $2",
+        [next.url, img.pet_id]
+      );
+    }
+  }
+  return { ok: true };
+});
+
+const _id__delete$7 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: _id__delete$6
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const index_post$6 = defineEventHandler(async (event) => {
+  var _a, _b, _c;
+  const { sub: userId } = requireRole(event, "admin");
+  const body = await readBody(event);
+  if (!(body == null ? void 0 : body.petId) || !(body == null ? void 0 : body.url)) {
+    throw createError({ statusCode: 400, message: "petId \u0438 url \u043E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u043D\u044B" });
+  }
+  if (body.isPrimary) {
+    await query(
+      "UPDATE pet_images SET is_primary = FALSE WHERE pet_id = $1",
+      [body.petId]
+    );
+    await query("UPDATE pets SET image_url = $1 WHERE id = $2", [body.url, body.petId]);
+  }
+  const rows = await query(
+    `INSERT INTO pet_images (pet_id, url, alt, is_primary, sort_order, uploaded_by)
+     VALUES ($1, $2, $3, $4, $5, $6)
+     RETURNING id`,
+    [body.petId, body.url, (_a = body.alt) != null ? _a : null, (_b = body.isPrimary) != null ? _b : false, (_c = body.sortOrder) != null ? _c : 0, userId]
+  );
+  setResponseStatus(event, 201);
+  return { id: rows[0].id };
+});
+
+const index_post$7 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: index_post$6
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const _id__delete$4 = defineEventHandler(async (event) => {
+  requireRole(event, "admin");
+  const id = getRouterParam(event, "id");
+  const pet = await queryOne("SELECT id FROM pets WHERE id = $1", [id]);
+  if (!pet) throw createError({ statusCode: 404, message: "\u0424\u0438\u0433\u0443\u0440\u043A\u0430 \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D\u0430" });
+  await queryOne("DELETE FROM pets WHERE id = $1", [id]);
+  return { ok: true };
+});
+
+const _id__delete$5 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: _id__delete$4
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const _id__get$2 = defineEventHandler(async (event) => {
   const id = getRouterParam(event, "id");
   const pet = await queryOne(
     `SELECT
        p.*,
        m.name AS mold_name, m.species AS mold_species, m.description AS mold_desc,
        g.number AS gen_number, g.label AS gen_label,
-       g.year_start, g.year_end
+       g.year_start, g.year_end,
+       rt.slug AS release_type_slug, rt.label AS release_type_label, rt.is_exclusive
      FROM pets p
      JOIN molds m       ON m.id = p.mold_id
      JOIN generations g ON g.id = p.generation_id
+     LEFT JOIN release_types rt ON rt.id = p.release_type_id
      WHERE p.id = $1`,
     [id]
   );
@@ -3396,7 +3731,6 @@ const _id__get = defineEventHandler(async (event) => {
     id: pet.id,
     number: pet.number,
     name: pet.name,
-    rarity: pet.rarity,
     description: pet.description,
     hasFlocking: pet.has_flocking,
     hasMagnet: pet.has_magnet,
@@ -3404,6 +3738,7 @@ const _id__get = defineEventHandler(async (event) => {
     colorScheme: pet.color_scheme,
     imageUrl: pet.image_url,
     createdAt: pet.created_at,
+    releaseType: pet.release_type_id ? { id: pet.release_type_id, slug: pet.release_type_slug, label: pet.release_type_label, isExclusive: pet.is_exclusive } : null,
     mold: { id: pet.mold_id, name: pet.mold_name, species: pet.mold_species, description: pet.mold_desc },
     generation: {
       id: pet.generation_id,
@@ -3415,9 +3750,53 @@ const _id__get = defineEventHandler(async (event) => {
   };
 });
 
-const _id__get$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const _id__get$3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: _id__get
+  default: _id__get$2
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const _id__patch$4 = defineEventHandler(async (event) => {
+  requireRole(event, "admin");
+  const id = getRouterParam(event, "id");
+  const body = await readBody(event);
+  const pet = await queryOne("SELECT id FROM pets WHERE id = $1", [id]);
+  if (!pet) throw createError({ statusCode: 404, message: "\u0424\u0438\u0433\u0443\u0440\u043A\u0430 \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D\u0430" });
+  const fields = [];
+  const params = [];
+  let pi = 1;
+  const allowed = [
+    ["name", "name"],
+    ["moldId", "mold_id"],
+    ["generationId", "generation_id"],
+    ["releaseTypeId", "release_type_id"],
+    ["hasFlocking", "has_flocking"],
+    ["hasMagnet", "has_magnet"],
+    ["hasGlitter", "has_glitter"],
+    ["colorScheme", "color_scheme"],
+    ["imageUrl", "image_url"],
+    ["description", "description"]
+  ];
+  for (const [jsKey, dbCol] of allowed) {
+    if (body[jsKey] !== void 0) {
+      fields.push(`${dbCol} = $${pi}`);
+      params.push(body[jsKey]);
+      pi++;
+    }
+  }
+  if (!fields.length) {
+    throw createError({ statusCode: 400, message: "\u041D\u0435\u0442 \u043F\u043E\u043B\u0435\u0439 \u0434\u043B\u044F \u043E\u0431\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F" });
+  }
+  params.push(id);
+  await queryOne(
+    `UPDATE pets SET ${fields.join(", ")} WHERE id = $${pi}`,
+    params
+  );
+  return { ok: true };
+});
+
+const _id__patch$5 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: _id__patch$4
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const index_get$4 = defineEventHandler(async (event) => {
@@ -3444,11 +3823,11 @@ const index_get$4 = defineEventHandler(async (event) => {
       pi++;
     }
   }
-  if (q.rarity) {
-    const rarities = String(q.rarity).split(",").filter(Boolean);
-    if (rarities.length) {
-      conditions.push(`p.rarity = ANY($${pi}::text[])`);
-      params.push(rarities);
+  if (q.releaseTypeSlugs) {
+    const slugs = String(q.releaseTypeSlugs).split(",").filter(Boolean);
+    if (slugs.length) {
+      conditions.push(`rt.slug = ANY($${pi}::text[])`);
+      params.push(slugs);
       pi++;
     }
   }
@@ -3473,20 +3852,23 @@ const index_get$4 = defineEventHandler(async (event) => {
   const sortMap = {
     number: "p.number ASC",
     name: "p.name ASC",
-    rarity: "CASE p.rarity WHEN 'exclusive' THEN 1 WHEN 'special' THEN 2 WHEN 'rare' THEN 3 ELSE 4 END",
+    rarity: "rt.sort_order ASC",
     generation: "g.number ASC, p.number ASC"
   };
   const orderBy = (_b = sortMap[sort]) != null ? _b : sortMap.number;
   const sql = `
     SELECT
-      p.id, p.number, p.name, p.rarity,
+      p.id, p.number, p.name,
       p.has_flocking, p.has_magnet, p.has_glitter,
       p.image_url, p.created_at,
+      p.release_type_id,
       m.id AS mold_id, m.name AS mold_name, m.species AS mold_species,
-      g.id AS generation_id, g.number AS gen_number, g.label AS gen_label
+      g.id AS generation_id, g.number AS gen_number, g.label AS gen_label,
+      rt.id AS release_type_id, rt.slug AS release_type_slug, rt.label AS release_type_label, rt.is_exclusive
     FROM pets p
     JOIN molds m       ON m.id = p.mold_id
     JOIN generations g ON g.id = p.generation_id
+    LEFT JOIN release_types rt ON rt.id = p.release_type_id
     ${where}
     ORDER BY ${orderBy}
     LIMIT $${pi} OFFSET $${pi + 1}
@@ -3494,8 +3876,7 @@ const index_get$4 = defineEventHandler(async (event) => {
   const countSql = `
     SELECT COUNT(*) AS total
     FROM pets p
-    JOIN generations g ON g.id = p.generation_id
-    ${where}
+    JOIN generations g ON g.id = p.generation_id    LEFT JOIN release_types rt ON rt.id = p.release_type_id    ${where}
   `;
   const [rows, countRow] = await Promise.all([
     query(sql, [...params, limit, offset]),
@@ -3507,12 +3888,12 @@ const index_get$4 = defineEventHandler(async (event) => {
       id: r.id,
       number: r.number,
       name: r.name,
-      rarity: r.rarity,
       hasFlocking: r.has_flocking,
       hasMagnet: r.has_magnet,
       hasGlitter: r.has_glitter,
       imageUrl: r.image_url,
       createdAt: r.created_at,
+      releaseType: r.release_type_id ? { id: r.release_type_id, slug: r.release_type_slug, label: r.release_type_label, isExclusive: r.is_exclusive } : null,
       mold: { id: r.mold_id, name: r.mold_name, species: r.mold_species },
       generation: { id: r.generation_id, number: r.gen_number, label: r.gen_label }
     })),
@@ -3528,7 +3909,7 @@ const index_get$5 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.definePropert
   default: index_get$4
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const index_post$2 = defineEventHandler(async (event) => {
+const index_post$4 = defineEventHandler(async (event) => {
   var _a, _b, _c, _d, _e, _f, _g;
   const payload = requireRole(event, "admin");
   const body = await readBody(event);
@@ -3537,7 +3918,7 @@ const index_post$2 = defineEventHandler(async (event) => {
     if (!(body == null ? void 0 : body[field])) throw createError({ statusCode: 400, message: `\u041F\u043E\u043B\u0435 ${field} \u043E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u043D\u043E` });
   }
   const rows = await query(
-    `INSERT INTO pets (number, name, mold_id, generation_id, rarity,
+    `INSERT INTO pets (number, name, mold_id, generation_id, release_type_id,
        has_flocking, has_magnet, has_glitter, color_scheme, image_url, description, created_by)
      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
      RETURNING id`,
@@ -3546,7 +3927,7 @@ const index_post$2 = defineEventHandler(async (event) => {
       body.name,
       body.moldId,
       body.generationId,
-      (_a = body.rarity) != null ? _a : "common",
+      (_a = body.releaseTypeId) != null ? _a : null,
       (_b = body.hasFlocking) != null ? _b : false,
       (_c = body.hasMagnet) != null ? _c : false,
       (_d = body.hasGlitter) != null ? _d : false,
@@ -3557,6 +3938,116 @@ const index_post$2 = defineEventHandler(async (event) => {
     ]
   );
   return { id: rows[0].id };
+});
+
+const index_post$5 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: index_post$4
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const _id__patch$2 = defineEventHandler(async (event) => {
+  const { sub: myId } = requireAuth(event);
+  const tradeId = getRouterParam(event, "id");
+  const body = await readBody(event);
+  if (!["accepted", "declined"].includes(body == null ? void 0 : body.status)) {
+    throw createError({ statusCode: 400, message: "status \u0434\u043E\u043B\u0436\u0435\u043D \u0431\u044B\u0442\u044C accepted \u0438\u043B\u0438 declined" });
+  }
+  const trade = await queryOne(
+    `SELECT id, receiver_id, status, offered_pet_id, wanted_pet_id, sender_id
+     FROM trade_offers WHERE id = $1`,
+    [tradeId]
+  );
+  if (!trade) throw createError({ statusCode: 404, message: "\u041F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u0435 \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D\u043E" });
+  if (trade.receiver_id !== myId) throw createError({ statusCode: 403, message: "\u041D\u0435\u0442 \u0434\u043E\u0441\u0442\u0443\u043F\u0430" });
+  if (trade.status !== "pending") {
+    throw createError({ statusCode: 409, message: "\u041F\u0440\u0435\u0434\u043B\u043E\u0436\u0435\u043D\u0438\u0435 \u0443\u0436\u0435 \u043E\u0431\u0440\u0430\u0431\u043E\u0442\u0430\u043D\u043E" });
+  }
+  await queryOne(
+    `UPDATE trade_offers SET status = $1, responded_at = now() WHERE id = $2`,
+    [body.status, tradeId]
+  );
+  if (body.status === "accepted") {
+    await queryOne(
+      "DELETE FROM collection_items WHERE user_id = $1 AND pet_id = $2",
+      [trade.sender_id, trade.offered_pet_id]
+    );
+    await queryOne(
+      `INSERT INTO collection_items (user_id, pet_id)
+       VALUES ($1, $2)
+       ON CONFLICT (user_id, pet_id) DO NOTHING`,
+      [myId, trade.offered_pet_id]
+    );
+    await queryOne(
+      "DELETE FROM collection_items WHERE user_id = $1 AND pet_id = $2",
+      [myId, trade.wanted_pet_id]
+    );
+    await queryOne(
+      `INSERT INTO collection_items (user_id, pet_id)
+       VALUES ($1, $2)
+       ON CONFLICT (user_id, pet_id) DO NOTHING`,
+      [trade.sender_id, trade.wanted_pet_id]
+    );
+  }
+  return { ok: true, status: body.status };
+});
+
+const _id__patch$3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: _id__patch$2
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const index_post$2 = defineEventHandler(async (event) => {
+  var _a;
+  const { sub: myId } = requireAuth(event);
+  const body = await readBody(event);
+  const required = ["receiverId", "offeredPetId", "wantedPetId"];
+  for (const f of required) {
+    if (!(body == null ? void 0 : body[f])) {
+      throw createError({ statusCode: 400, message: `\u041F\u043E\u043B\u0435 ${f} \u043E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u043D\u043E` });
+    }
+  }
+  if (myId === body.receiverId) {
+    throw createError({ statusCode: 400, message: "\u041D\u0435\u043B\u044C\u0437\u044F \u043F\u0440\u0435\u0434\u043B\u043E\u0436\u0438\u0442\u044C \u043E\u0431\u043C\u0435\u043D \u0441\u0430\u043C\u043E\u043C\u0443 \u0441\u0435\u0431\u0435" });
+  }
+  const ownsPet = await queryOne(
+    "SELECT id FROM collection_items WHERE user_id = $1 AND pet_id = $2",
+    [myId, body.offeredPetId]
+  );
+  if (!ownsPet) {
+    throw createError({ statusCode: 400, message: "\u041F\u0440\u0435\u0434\u043B\u0430\u0433\u0430\u0435\u043C\u0430\u044F \u0444\u0438\u0433\u0443\u0440\u043A\u0430 \u043D\u0435 \u0432 \u0432\u0430\u0448\u0435\u0439 \u043A\u043E\u043B\u043B\u0435\u043A\u0446\u0438\u0438" });
+  }
+  const [u1, u2] = [myId, body.receiverId].sort();
+  let conv = await queryOne(
+    "SELECT id FROM conversations WHERE user_1_id = $1 AND user_2_id = $2",
+    [u1, u2]
+  );
+  if (!conv) {
+    const rows = await query(
+      "INSERT INTO conversations (user_1_id, user_2_id) VALUES ($1,$2) RETURNING id",
+      [u1, u2]
+    );
+    conv = rows[0];
+  }
+  const msgRows = await query(
+    `INSERT INTO messages (conversation_id, sender_id, body)
+     VALUES ($1, $2, NULL)
+     RETURNING id, created_at`,
+    [conv.id, myId]
+  );
+  const msgId = msgRows[0].id;
+  const tradeRows = await query(
+    `INSERT INTO trade_offers
+       (message_id, sender_id, receiver_id, offered_pet_id, wanted_pet_id, note)
+     VALUES ($1,$2,$3,$4,$5,$6)
+     RETURNING id`,
+    [msgId, myId, body.receiverId, body.offeredPetId, body.wantedPetId, (_a = body.note) != null ? _a : null]
+  );
+  setResponseStatus(event, 201);
+  return {
+    tradeId: tradeRows[0].id,
+    messageId: msgId,
+    createdAt: msgRows[0].created_at
+  };
 });
 
 const index_post$3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
@@ -3581,6 +4072,49 @@ const _id__delete$3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.definePrope
   default: _id__delete$2
 }, Symbol.toStringTag, { value: 'Module' }));
 
+const _id__get = defineEventHandler(async (event) => {
+  var _a;
+  const id = getRouterParam(event, "id");
+  const user = await queryOne(
+    `SELECT
+       u.id, u.username, u.bio, u.location, u.avatar_url, u.created_at,
+       COUNT(DISTINCT ci.id) AS collection_count,
+       COUNT(DISTINCT wi.id) AS wishlist_count
+     FROM users u
+     LEFT JOIN collection_items ci ON ci.user_id = u.id
+     LEFT JOIN wishlist_items   wi ON wi.user_id = u.id
+     WHERE u.id = $1
+     GROUP BY u.id`,
+    [id]
+  );
+  if (!user) throw createError({ statusCode: 404, message: "\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D" });
+  const gens = await query(
+    `SELECT DISTINCT g.number AS gen_number
+     FROM collection_items ci
+     JOIN pets p        ON p.id = ci.pet_id
+     JOIN generations g ON g.id = p.generation_id
+     WHERE ci.user_id = $1
+     ORDER BY g.number`,
+    [id]
+  );
+  return {
+    id: user.id,
+    username: user.username,
+    bio: user.bio,
+    location: user.location,
+    avatarUrl: (_a = user.avatar_url) != null ? _a : "/images/avatars/default_avatar.svg",
+    createdAt: user.created_at,
+    collectionCount: Number(user.collection_count),
+    wishlistCount: Number(user.wishlist_count),
+    generations: gens.map((g) => g.gen_number)
+  };
+});
+
+const _id__get$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: _id__get
+}, Symbol.toStringTag, { value: 'Module' }));
+
 const _id__patch = defineEventHandler(async (event) => {
   requireRole(event, "admin");
   const id = getRouterParam(event, "id");
@@ -3599,6 +4133,55 @@ const _id__patch = defineEventHandler(async (event) => {
 const _id__patch$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: _id__patch
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const collection_get = defineEventHandler(async (event) => {
+  const userId = getRouterParam(event, "id");
+  const rows = await query(
+    `SELECT
+       ci.id, ci.note, ci.acquired_at, ci.added_at,
+       p.id AS pet_id, p.number, p.name, p.image_url,
+       m.name   AS mold_name,
+       g.label  AS gen_label, g.number AS gen_number,
+       rt.slug  AS rt_slug,
+       rt.label AS rt_label,
+       rt.is_exclusive AS rt_exclusive
+     FROM collection_items ci
+     JOIN pets p        ON p.id = ci.pet_id
+     JOIN molds m       ON m.id = p.mold_id
+     JOIN generations g ON g.id = p.generation_id
+     LEFT JOIN release_types rt ON rt.id = p.release_type_id
+     WHERE ci.user_id = $1
+     ORDER BY ci.added_at DESC`,
+    [userId]
+  );
+  return rows.map((r) => {
+    var _a;
+    return {
+      id: r.id,
+      note: r.note,
+      acquiredAt: r.acquired_at,
+      addedAt: r.added_at,
+      pet: {
+        id: r.pet_id,
+        number: r.number,
+        name: r.name,
+        imageUrl: (_a = r.image_url) != null ? _a : "/images/placeholders/pet_thumb.svg",
+        moldName: r.mold_name,
+        generation: { label: r.gen_label, number: r.gen_number },
+        releaseType: r.rt_slug ? {
+          slug: r.rt_slug,
+          label: r.rt_label,
+          isExclusive: r.rt_exclusive
+        } : null
+      }
+    };
+  });
+});
+
+const collection_get$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: collection_get
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const index_get$2 = defineEventHandler(async (event) => {
@@ -3627,6 +4210,49 @@ const index_get$3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.definePropert
   default: index_get$2
 }, Symbol.toStringTag, { value: 'Module' }));
 
+const me_patch = defineEventHandler(async (event) => {
+  var _a;
+  const { sub: userId } = requireAuth(event);
+  const body = await readBody(event);
+  const fields = [];
+  const params = [];
+  let pi = 1;
+  if (body.bio !== void 0) {
+    fields.push(`bio = $${pi}`);
+    params.push(body.bio);
+    pi++;
+  }
+  if (body.location !== void 0) {
+    fields.push(`location = $${pi}`);
+    params.push(body.location);
+    pi++;
+  }
+  if (body.avatarUrl !== void 0) {
+    fields.push(`avatar_url = $${pi}`);
+    params.push(body.avatarUrl);
+    pi++;
+  }
+  if (!fields.length) throw createError({ statusCode: 400, message: "\u041D\u0435\u0442 \u043F\u043E\u043B\u0435\u0439 \u0434\u043B\u044F \u043E\u0431\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F" });
+  params.push(userId);
+  const updated = await queryOne(
+    `UPDATE users SET ${fields.join(", ")} WHERE id = $${pi}
+     RETURNING id, username, bio, location, avatar_url`,
+    params
+  );
+  return {
+    id: updated.id,
+    username: updated.username,
+    bio: updated.bio,
+    location: updated.location,
+    avatarUrl: (_a = updated.avatar_url) != null ? _a : "/images/avatars/default_avatar.svg"
+  };
+});
+
+const me_patch$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: me_patch
+}, Symbol.toStringTag, { value: 'Module' }));
+
 const _id__delete = defineEventHandler(async (event) => {
   const payload = requireAuth(event);
   const id = getRouterParam(event, "id");
@@ -3649,13 +4275,16 @@ const index_get = defineEventHandler(async (event) => {
   const rows = await query(
     `SELECT
        wi.id, wi.added_at,
-       p.id AS pet_id, p.number, p.name, p.rarity, p.image_url,
+       p.id AS pet_id, p.number, p.name, p.image_url,
+       p.release_type_id,
        m.name AS mold_name,
-       g.label AS gen_label
+       g.label AS gen_label,
+       rt.slug AS release_type_slug, rt.label AS release_type_label, rt.is_exclusive
      FROM wishlist_items wi
      JOIN pets p        ON p.id = wi.pet_id
      JOIN molds m       ON m.id = p.mold_id
      JOIN generations g ON g.id = p.generation_id
+     LEFT JOIN release_types rt ON rt.id = p.release_type_id
      WHERE wi.user_id = $1
      ORDER BY wi.added_at DESC`,
     [payload.sub]
@@ -3667,8 +4296,8 @@ const index_get = defineEventHandler(async (event) => {
       id: r.pet_id,
       number: r.number,
       name: r.name,
-      rarity: r.rarity,
       imageUrl: r.image_url,
+      releaseType: r.release_type_id ? { id: r.release_type_id, slug: r.release_type_slug, label: r.release_type_label, isExclusive: r.is_exclusive } : null,
       moldName: r.mold_name,
       genLabel: r.gen_label
     }

@@ -12,13 +12,13 @@ export default defineEventHandler(async (event) => {
   }
 
   const rows = await query(
-    `INSERT INTO pets (number, name, mold_id, generation_id, rarity,
+    `INSERT INTO pets (number, name, mold_id, generation_id, release_type_id,
        has_flocking, has_magnet, has_glitter, color_scheme, image_url, description, created_by)
      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
      RETURNING id`,
     [
       body.number, body.name, body.moldId, body.generationId,
-      body.rarity ?? 'common',
+      body.releaseTypeId ?? null,
       body.hasFlocking ?? false, body.hasMagnet ?? false, body.hasGlitter ?? false,
       body.colorScheme ?? null, body.imageUrl ?? null, body.description ?? null,
       payload.sub,

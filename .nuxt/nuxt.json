@@ -1,9 +1,9 @@
 {
-  "_hash": "gEYCFrfyVp3U5rEF3rPbwd-p_ycDLF_Hw-ZrMvlZU7c",
+  "_hash": "eh7jjOYnR-G7h_pg4l_UGo24grmPN4v8B0Si8bJGijk",
   "project": {
-    "rootDir": "C:/Users/user/Downloads/lps-app"
+    "rootDir": "C:/Users/user/Downloads/lps-v3"
   },
   "versions": {
-    "nuxt": "3.21.7"
+    "nuxt": "3.21.8"
   }
 }

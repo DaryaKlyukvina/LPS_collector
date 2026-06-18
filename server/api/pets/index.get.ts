@@ -33,11 +33,11 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  if (q.rarity) {
-    const rarities = String(q.rarity).split(',').filter(Boolean)
-    if (rarities.length) {
-      conditions.push(`p.rarity = ANY($${pi}::text[])`)
-      params.push(rarities)
+  if (q.releaseTypeSlugs) {
+    const slugs = String(q.releaseTypeSlugs).split(',').filter(Boolean)
+    if (slugs.length) {
+      conditions.push(`rt.slug = ANY($${pi}::text[])`)
+      params.push(slugs)
       pi++
     }
   }
@@ -61,21 +61,24 @@ export default defineEventHandler(async (event) => {
   const sortMap: Record<string, string> = {
     number:     'p.number ASC',
     name:       'p.name ASC',
-    rarity:     "CASE p.rarity WHEN 'exclusive' THEN 1 WHEN 'special' THEN 2 WHEN 'rare' THEN 3 ELSE 4 END",
+    rarity:     'rt.sort_order ASC',
     generation: 'g.number ASC, p.number ASC',
   }
   const orderBy = sortMap[sort] ?? sortMap.number
 
   const sql = `
     SELECT
-      p.id, p.number, p.name, p.rarity,
+      p.id, p.number, p.name,
       p.has_flocking, p.has_magnet, p.has_glitter,
       p.image_url, p.created_at,
+      p.release_type_id,
       m.id AS mold_id, m.name AS mold_name, m.species AS mold_species,
-      g.id AS generation_id, g.number AS gen_number, g.label AS gen_label
+      g.id AS generation_id, g.number AS gen_number, g.label AS gen_label,
+      rt.id AS release_type_id, rt.slug AS release_type_slug, rt.label AS release_type_label, rt.is_exclusive
     FROM pets p
     JOIN molds m       ON m.id = p.mold_id
     JOIN generations g ON g.id = p.generation_id
+    LEFT JOIN release_types rt ON rt.id = p.release_type_id
     ${where}
     ORDER BY ${orderBy}
     LIMIT $${pi} OFFSET $${pi + 1}
@@ -84,8 +87,7 @@ export default defineEventHandler(async (event) => {
   const countSql = `
     SELECT COUNT(*) AS total
     FROM pets p
-    JOIN generations g ON g.id = p.generation_id
-    ${where}
+    JOIN generations g ON g.id = p.generation_id    LEFT JOIN release_types rt ON rt.id = p.release_type_id    ${where}
   `
 
   const [rows, countRow] = await Promise.all([
@@ -97,9 +99,10 @@ export default defineEventHandler(async (event) => {
 
   return {
     items: rows.map(r => ({
-      id: r.id, number: r.number, name: r.name, rarity: r.rarity,
+      id: r.id, number: r.number, name: r.name,
       hasFlocking: r.has_flocking, hasMagnet: r.has_magnet, hasGlitter: r.has_glitter,
       imageUrl: r.image_url, createdAt: r.created_at,
+      releaseType: r.release_type_id ? { id: r.release_type_id, slug: r.release_type_slug, label: r.release_type_label, isExclusive: r.is_exclusive } : null,
       mold: { id: r.mold_id, name: r.mold_name, species: r.mold_species },
       generation: { id: r.generation_id, number: r.gen_number, label: r.gen_label },
     })),

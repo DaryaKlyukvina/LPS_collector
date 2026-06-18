@@ -43,12 +43,12 @@
           <tbody>
             <tr v-for="pet in petsData?.items" :key="pet.id">
               <td>
-                <div class="pet-icon fig tint-lav"><span class="glyph">🐾</span></div>
+                <div class="pet-icon fig tint-lav"><img :src="pet.imageUrl ?? '/images/placeholders/pet_thumb.svg'" :alt="pet.name" style="width:100%;height:100%;object-fit:contain;padding:2px"></div>
                 <span>#{{ pet.number }} {{ pet.name }}</span>
               </td>
               <td>{{ pet.generation.label }}</td>
               <td>{{ pet.mold.name }}</td>
-              <td><span class="rar" :class="`rar-${pet.rarity}`">{{ pet.rarity }}</span></td>
+              <td><span v-if="pet.releaseType" class="rar" :class="`rar-${pet.releaseType.slug}`">{{ pet.releaseType.label }}</span><span v-else class="rar">—</span></td>
               <td>
                 <div class="row-act">
                   <span class="ract"><i class="ti ti-edit" /></span>
@@ -111,13 +111,13 @@ const stats = [
   { label: 'На модерации',         value: '4',     trend: -1,sub: 'Требует внимания' },
 ]
 
-const { data: petsData }  = await useFetch('/api/pets', { query: { limit: 20 } })
+const { data: petsData, refresh: refreshPets } = await useFetch('/api/pets', { query: { limit: 20 } })
 const { data: usersData, refresh: refreshUsers } = await useFetch('/api/users')
 
 async function deletePet(id: string) {
   if (!confirm('Удалить фигурку?')) return
   await $fetch(`/api/pets/${id}`, { method: 'DELETE' })
-  refreshNuxtData()
+  refreshPets()
 }
 
 async function deleteUser(id: string) {

@@ -2,7 +2,11 @@
   <div>
     <!-- Шапка профиля -->
     <div class="profile-header">
-      <div class="av-big">{{ initials }}</div>
+      <img
+        class="av-big"
+        :src="user.avatarUrl ?? '/images/avatars/default_avatar.svg'"
+        :alt="user.username"
+      >
       <div>
         <div class="profile-name">{{ user.username }}</div>
         <div class="profile-join">
@@ -13,9 +17,13 @@
         </div>
         <div v-if="user.bio" class="profile-bio">{{ user.bio }}</div>
       </div>
-      <div v-if="isOwnProfile" class="profile-actions">
-        <button class="btn btn-soft btn-sm"><i class="ti ti-edit" /> Редактировать</button>
-        <button class="btn btn-ghost btn-sm" @click="auth.logout()"><i class="ti ti-logout" /> Выйти</button>
+      <div class="profile-actions">
+        <button class="btn btn-soft btn-sm" @click="showEdit = true">
+          <i class="ti ti-edit" /> Редактировать
+        </button>
+        <button class="btn btn-ghost btn-sm" @click="auth.logout()">
+          <i class="ti ti-logout" /> Выйти
+        </button>
       </div>
     </div>
 
@@ -46,41 +54,84 @@
         </div>
       </div>
       <div class="col-grid">
-        <div v-for="item in filteredCol" :key="item.id" class="col-card">
-          <div class="col-img fig tint-lav"><span class="glyph">🐾</span></div>
+        <NuxtLink
+          v-for="item in filteredCol" :key="item.id"
+          class="col-card" :to="`/pets/${item.pet.id}`"
+        >
+          <div class="col-img fig" :class="`tint-${speciesTint(item.pet)}`">
+            <img :src="item.pet.imageUrl ?? '/images/placeholders/pet_thumb.svg'" :alt="item.pet.name">
+          </div>
           <div class="col-body">
             <div class="col-num">#{{ String(item.pet.number).padStart(4,'0') }}</div>
             <div class="col-name">{{ item.pet.name }}</div>
             <div v-if="item.note" class="col-note">«{{ item.note }}»</div>
             <div class="col-foot">
-              <span v-if="item.condition" class="cond" :class="`cond-${item.condition}`">
-                {{ condLabel[item.condition] }}
+              <span v-if="item.pet.releaseType" class="rar" :class="item.pet.releaseType.isExclusive ? 'rar-exclusive' : 'rar-common'">
+                {{ item.pet.releaseType.label }}
               </span>
-              <div v-if="isOwnProfile" class="own-actions">
-                <span class="oa" title="Редактировать"><i class="ti ti-edit" /></span>
-                <span class="oa oa-d" title="Удалить" @click="removeFromCol(item.id)"><i class="ti ti-trash" /></span>
+              <div class="own-actions">
+                <span class="oa" title="Редактировать заметку" @click.prevent="editNote(item)">
+                  <i class="ti ti-edit" />
+                </span>
+                <span class="oa oa-d" title="Удалить" @click.prevent="removeFromCol(item.id)">
+                  <i class="ti ti-trash" />
+                </span>
               </div>
             </div>
           </div>
-        </div>
+        </NuxtLink>
       </div>
     </div>
 
     <!-- Вишлист -->
     <div v-if="tab === 'wish'" class="tab-content">
       <div class="wish-grid">
-        <div v-for="item in wishlist" :key="item.id" class="wish-card">
-          <div class="wish-img fig tint-butter"><span class="glyph">🐾</span></div>
+        <NuxtLink
+          v-for="item in wishlist" :key="item.id"
+          class="wish-card" :to="`/pets/${item.pet.id}`"
+        >
+          <div class="wish-img fig" :class="`tint-${speciesTint(item.pet)}`">
+            <img :src="item.pet.imageUrl ?? '/images/placeholders/pet_thumb.svg'" :alt="item.pet.name">
+          </div>
           <div class="wish-body">
             <div class="wish-num">#{{ String(item.pet.number).padStart(4,'0') }}</div>
             <div class="wish-name">{{ item.pet.name }}</div>
             <div class="wish-foot">
               <span class="wish-gen">{{ item.pet.genLabel }} · {{ item.pet.moldName }}</span>
-              <button v-if="isOwnProfile" class="move-btn" @click="moveToCol(item)">
+              <button class="move-btn" @click.prevent="moveToCol(item)">
                 <i class="ti ti-arrow-right" /> В коллекцию
               </button>
             </div>
           </div>
+        </NuxtLink>
+      </div>
+    </div>
+
+    <!-- Модалка редактирования профиля -->
+    <div class="modal-overlay" :class="{ open: showEdit }" @click.self="showEdit = false">
+      <div class="modal" style="max-width:420px">
+        <div class="modal-head">
+          <div class="mh-ic"><i class="ti ti-user" /></div>
+          <div class="mh-tt">
+            <div class="modal-title">Редактировать профиль</div>
+          </div>
+          <button class="modal-close" @click="showEdit = false"><i class="ti ti-x" /></button>
+        </div>
+        <div class="modal-body">
+          <div class="edit-field">
+            <label>Город / страна</label>
+            <input v-model="editData.location" type="text" placeholder="Москва, Россия">
+          </div>
+          <div class="edit-field">
+            <label>О себе</label>
+            <textarea v-model="editData.bio" rows="3" placeholder="Расскажи о своей коллекции..."></textarea>
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button class="btn btn-ghost" @click="showEdit = false">Отмена</button>
+          <button class="btn btn-primary" style="margin-left:auto" @click="saveProfile">
+            <i class="ti ti-check" /> Сохранить
+          </button>
         </div>
       </div>
     </div>
@@ -93,14 +144,20 @@ definePageMeta({ middleware: 'auth' })
 const auth = useAuthStore()
 const tab = ref<'col'|'wish'>('col')
 const colSearch = ref('')
+const showEdit = ref(false)
 
 const user = computed(() => auth.user!)
-const isOwnProfile = computed(() => true) // TODO: поддержка чужого профиля через /users/:id
+const joinDate = computed(() =>
+  new Date(user.value.createdAt ?? '').toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' })
+)
 
-const initials = computed(() => user.value.username.slice(0, 2).toUpperCase())
-const joinDate = computed(() => new Date(user.value.createdAt ?? '').toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' }))
-
-const condLabel: Record<string, string> = { mint: 'Отличное', good: 'Хорошее', fair: 'Удовлетворительное', poor: 'Плохое' }
+const SPECIES_TINTS: Record<string, string> = {
+  'Собака': 'lav', 'Кошка': 'mint', 'Кролик': 'peach',
+  'Ёж': 'butter', 'Хомяк': 'pink', 'Лягушка': 'sky',
+}
+function speciesTint(pet: any) {
+  return SPECIES_TINTS[pet.mold?.species ?? pet.moldSpecies ?? ''] ?? 'lav'
+}
 
 // Коллекция
 const { data: colData, refresh: refreshCol } = await useFetch('/api/collection')
@@ -117,6 +174,13 @@ async function removeFromCol(id: string) {
   refreshCol()
 }
 
+function editNote(item: any) {
+  const note = prompt('Заметка к фигурке:', item.note ?? '')
+  if (note !== null) {
+    $fetch(`/api/collection/${item.id}`, { method: 'PATCH', body: { note } }).then(() => refreshCol())
+  }
+}
+
 // Вишлист
 const { data: wishData, refresh: refreshWish } = await useFetch('/api/wishlist')
 const wishlist = computed(() => wishData.value ?? [])
@@ -129,52 +193,50 @@ async function moveToCol(item: any) {
 }
 
 // Статистика
-const uniqGens = computed(() => new Set(collection.value.map((i: any) => i.pet.generation.number)).size)
+const uniqGens = computed(() => new Set(collection.value.map((i: any) => i.pet.generation?.number)).size)
 const favGen = computed(() => {
   const counts: Record<string, number> = {}
-  collection.value.forEach((i: any) => { const l = i.pet.generation.label; counts[l] = (counts[l] || 0) + 1 })
-  return Object.entries(counts).sort((a,b) => b[1]-a[1])[0]?.[0] ?? '—'
+  collection.value.forEach((i: any) => {
+    const l = i.pet.generation?.label
+    if (l) counts[l] = (counts[l] || 0) + 1
+  })
+  return Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? '—'
 })
+
+// Редактирование профиля
+const editData = reactive({ bio: user.value.bio ?? '', location: user.value.location ?? '' })
+watch(showEdit, (v) => {
+  if (v) { editData.bio = user.value.bio ?? ''; editData.location = user.value.location ?? '' }
+})
+
+async function saveProfile() {
+  await auth.updateProfile({ bio: editData.bio, location: editData.location })
+  showEdit.value = false
+}
 </script>
 
 <style lang="scss">
 .profile-header {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 18px;
-  align-items: start;
-  padding: 22px;
-  border-bottom: 1px solid $line;
+  display: grid; grid-template-columns: auto 1fr auto;
+  gap: 18px; align-items: start; padding: 22px; border-bottom: 1px solid $line;
 }
-
 .av-big {
-  @include avatar-base(70px, 24px);
-  @include font-display(24px);
-  background: linear-gradient(150deg, $brand-tint, $brand-tint-2);
-  border: 2px solid $brand-line;
-  color: $brand;
-  box-shadow: $sh-sm;
+  width: 70px; height: 70px; border-radius: $r-pill; object-fit: cover;
+  border: 2px solid $brand-line; box-shadow: $sh-sm; flex-shrink: 0;
 }
-
 .profile-name { @include font-display(21px); color: $ink; margin-bottom: 4px; }
 .profile-join { font-size: 12.5px; color: $ink-3; margin-bottom: 9px; @include flex-row(5px); font-weight: 600; }
 .profile-bio  { font-size: 13.5px; color: $ink-2; line-height: 1.55; }
-.profile-actions { @include flex-row(0); flex-direction: column; gap: 7px; flex-shrink: 0; }
+.profile-actions { display: flex; flex-direction: column; gap: 7px; flex-shrink: 0; }
 .country { color: $brand; }
 
 .stats-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  border-bottom: 1px solid $line;
-  background: $bg-sunken;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  border-bottom: 1px solid $line; background: $bg-sunken;
 }
-
 .pstat {
-  padding: 16px 12px;
-  text-align: center;
-  border-right: 1px solid $line;
+  padding: 16px 12px; text-align: center; border-right: 1px solid $line;
   &:last-child { border-right: none; }
-
   &-n { @include font-display(21px); color: $brand; }
   &-l { font-size: 11.5px; color: $ink-2; margin-top: 3px; font-weight: 600; }
 }
@@ -184,34 +246,50 @@ const favGen = computed(() => {
 
 .col-grid, .wish-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 13px; }
 
-.col-card, .wish-card { @include card; }
-.col-img, .wish-img   { height: 82px; .glyph { font-size: 30px; } }
+.col-card, .wish-card { @include card; text-decoration: none; color: inherit; }
+.col-img, .wish-img   { height: 82px; overflow: hidden; img { width: 100%; height: 100%; object-fit: contain; padding: 4px; } }
 .col-body, .wish-body { padding: 10px 12px 11px; }
 .col-num, .wish-num   { font-size: 10.5px; color: $ink-3; font-weight: 700; }
 .col-name, .wish-name { @include font-display(13.5px, 600); margin-top: 1px; }
 .col-note { font-size: 11px; color: $ink-2; margin-top: 4px; font-style: italic; line-height: 1.4; }
 .col-foot, .wish-foot { @include flex-row(0, space-between); margin-top: 9px; }
 
-.cond {
-  font-size: 9.5px; font-weight: 700; padding: 3px 8px; border-radius: $r-pill;
-  &-mint { background: #eaf3de; color: #3b6d11; }
-  &-good { background: $gold-tint; color: $gold-ink; }
-}
-
 .own-actions { @include flex-row(3px); }
 .oa {
-  font-size: 15px; color: $ink-3; cursor: pointer;
-  padding: 3px; border-radius: 6px; transition: .14s;
+  font-size: 15px; color: $ink-3; cursor: pointer; padding: 3px; border-radius: 6px; transition: .14s;
   &:hover { background: $bg-inset; color: $ink; }
   &-d:hover { color: $danger; background: $danger-tint; }
 }
 
 .wish-gen { font-size: 11px; color: $ink-2; font-weight: 600; }
 .move-btn {
-  font-size: 10.5px; font-weight: 700; padding: 4px 9px;
-  border-radius: $r-pill; border: 1px solid $success-line;
-  color: $success; background: $success-tint; cursor: pointer;
+  font-size: 10.5px; font-weight: 700; padding: 4px 9px; border-radius: $r-pill;
+  border: 1px solid $success-line; color: $success; background: $success-tint; cursor: pointer;
   @include flex-row(3px); font-family: $font-body;
-  &:hover { filter: brightness(.97); }
 }
+
+.edit-field {
+  margin-bottom: 14px;
+  label { display: block; font-size: 12px; color: $ink-2; margin-bottom: 6px; font-weight: 700; }
+  input, textarea { @include input-base; }
+  textarea { resize: vertical; }
+}
+
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(36,31,24,.42); backdrop-filter: blur(2px);
+  display: none; align-items: center; justify-content: center; z-index: 50; padding: 24px;
+  &.open { display: flex; }
+}
+.modal {
+  background: $bg-card; border-radius: $r-xl; box-shadow: $sh-lg;
+  width: 100%; max-height: 88vh; display: flex; flex-direction: column;
+  overflow: hidden; border: 1px solid $line;
+}
+.modal-head { @include flex-row(10px); padding: 16px 20px; border-bottom: 1px solid $line; }
+.mh-ic { width: 34px; height: 34px; border-radius: 10px; background: $brand-tint; color: $brand; display: grid; place-items: center; font-size: 18px; flex-shrink: 0; }
+.mh-tt { flex: 1; }
+.modal-title { @include font-display(16px, 700); color: $ink; }
+.modal-close { width: 32px; height: 32px; border-radius: $r-sm; display: grid; place-items: center; cursor: pointer; color: $ink-3; font-size: 20px; border: none; background: transparent; }
+.modal-body { padding: 16px 20px; overflow-y: auto; }
+.modal-foot { @include flex-row(10px); padding: 14px 20px; border-top: 1px solid $line; background: $bg-sunken; }
 </style>

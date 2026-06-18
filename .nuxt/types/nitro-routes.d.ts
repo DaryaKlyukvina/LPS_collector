@@ -6,11 +6,21 @@ declare module "nitropack/types" {
     '/api/auth/login': {
       'post': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/auth/login.post').default>>>>
     }
+    '/api/auth/logout': {
+      'post': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/auth/logout.post').default>>>>
+    }
     '/api/auth/me': {
       'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/auth/me.get').default>>>>
     }
     '/api/auth/register': {
       'post': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/auth/register.post').default>>>>
+    }
+    '/api/chat/:userId': {
+      'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/chat/[userId].get').default>>>>
+      'post': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/chat/[userId].post').default>>>>
+    }
+    '/api/chat': {
+      'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/chat/index.get').default>>>>
     }
     '/api/collection/:id': {
       'delete': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/collection/[id].delete').default>>>>
@@ -20,19 +30,40 @@ declare module "nitropack/types" {
       'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/collection/index.get').default>>>>
       'post': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/collection/index.post').default>>>>
     }
+    '/api/pet-images/:id': {
+      'delete': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/pet-images/[id].delete').default>>>>
+    }
+    '/api/pet-images': {
+      'post': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/pet-images/index.post').default>>>>
+    }
     '/api/pets/:id': {
+      'delete': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/pets/[id].delete').default>>>>
       'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/pets/[id].get').default>>>>
+      'patch': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/pets/[id].patch').default>>>>
     }
     '/api/pets': {
       'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/pets/index.get').default>>>>
       'post': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/pets/index.post').default>>>>
     }
+    '/api/trades/:id': {
+      'patch': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/trades/[id].patch').default>>>>
+    }
+    '/api/trades': {
+      'post': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/trades/index.post').default>>>>
+    }
     '/api/users/:id': {
       'delete': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/users/[id].delete').default>>>>
+      'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/users/[id].get').default>>>>
       'patch': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/users/[id].patch').default>>>>
+    }
+    '/api/users/:id/collection': {
+      'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/users/[id]/collection.get').default>>>>
     }
     '/api/users': {
       'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/users/index.get').default>>>>
+    }
+    '/api/users/me': {
+      'patch': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/users/me.patch').default>>>>
     }
     '/api/wishlist/:id': {
       'delete': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/wishlist/[id].delete').default>>>>

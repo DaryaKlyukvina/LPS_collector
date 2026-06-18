@@ -61,15 +61,15 @@
           v-for="pet in data?.items" :key="pet.id"
           class="pcard" :to="`/pets/${pet.id}`"
         >
-          <div class="pimg fig" :class="`tint-${tintFor(pet.id)}`">
-            <span class="glyph">🐾</span>
+          <div class="pimg fig" :class="`tint-${tintFor(pet)}`">
+            <img :src="pet.imageUrl ?? '/images/placeholders/pet_thumb.svg'" :alt="pet.name" class="pet-img-el">
           </div>
           <div class="pbody">
             <div class="pnum">#{{ String(pet.number).padStart(4,'0') }}</div>
             <div class="pname">{{ pet.name }}</div>
             <div class="pmeta">{{ pet.generation.label }} · {{ pet.mold.name }}</div>
             <div class="pfoot">
-              <span class="rar" :class="`rar-${pet.rarity}`">{{ rarityLabel[pet.rarity] }}</span>
+              <span v-if="pet.releaseType" class="rar" :class="pet.releaseType.isExclusive ? 'rar-exclusive' : 'rar-common'">{{ pet.releaseType.label }}</span>
               <span v-if="auth.isLoggedIn" class="like" :class="{ on: isLiked(pet.id) }" @click.prevent="toggleLike(pet.id)">
                 <i :class="isLiked(pet.id) ? 'ti ti-heart-filled' : 'ti ti-heart'" />
               </span>
@@ -95,11 +95,13 @@
 <script setup lang="ts">
 const auth = useAuthStore()
 
+const SPECIES_TINTS: Record<string, string> = {
+  'Собака': 'lav', 'Кошка': 'mint', 'Кролик': 'peach',
+  'Ёж': 'butter', 'Хомяк': 'pink', 'Лягушка': 'sky',
+}
 const TINTS = ['lav','mint','peach','butter','pink','sky']
-const tintFor = (id: string) => TINTS[parseInt(id.slice(-2), 16) % TINTS.length]
-
-const rarityLabel: Record<string, string> = {
-  common: 'Обычная', rare: 'Редкая', special: 'Спец. серия', exclusive: 'Эксклюзив'
+function tintFor(pet: any) {
+  return SPECIES_TINTS[pet.mold?.species ?? ''] ?? TINTS[pet.number % TINTS.length]
 }
 
 const generations = [1,2,3,4,5,6,7]
@@ -120,7 +122,7 @@ const { data } = await useFetch('/api/pets', {
   query: computed(() => ({
     search: filters.search || undefined,
     generations: filters.generations.join(',') || undefined,
-    rarity: filters.rarity.join(',') || undefined,
+    releaseTypeSlugs: filters.rarity.join(',') || undefined,
     hasFlocking: filters.hasFlocking || undefined,
     hasMagnet: filters.hasMagnet || undefined,
     hasGlitter: filters.hasGlitter || undefined,
@@ -227,4 +229,5 @@ async function toggleLike(petId: string) {
   &.on   { background: $brand-tint; border-color: $brand-line; color: $brand-deep; }
   &:disabled { opacity: .4; cursor: default; }
 }
+.pet-img-el { width:100%; height:100%; object-fit:contain; padding:6px; }
 </style>

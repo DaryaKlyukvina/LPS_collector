@@ -34,7 +34,16 @@ export interface Mold {
   description?: string
 }
 
-// — Редкость —
+// — Тип релиза (редкость) —
+export interface ReleaseType {
+  id: string
+  slug: string            // 'common', 'rare', 'special', 'exclusive'
+  label: string           // "Обычная", "Редкая", "Спец. серия", "Эксклюзив"
+  isExclusive: boolean
+  sortOrder: number
+}
+
+// — Редкость (для типизации) —
 export type RarityLevel = 'common' | 'rare' | 'special' | 'exclusive'
 
 // — Фигурка (основная единица каталога) —
@@ -46,7 +55,7 @@ export interface Pet {
   mold?: Mold             // JOIN
   generationId: string
   generation?: Generation // JOIN
-  rarity: RarityLevel
+  releaseType?: ReleaseType | null  // новое поле
   hasFlocking: boolean    // флокинг (бархатистое покрытие)
   hasMagnet: boolean      // магнит в лапке
   hasGlitter: boolean     // блёстки
