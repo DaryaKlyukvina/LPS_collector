@@ -3203,14 +3203,17 @@ function requireRole(event, ...roles) {
 }
 
 const login_post = defineEventHandler(async (event) => {
+  var _a;
   const body = await readBody(event);
   if (!(body == null ? void 0 : body.email) || !(body == null ? void 0 : body.password)) {
     throw createError({ statusCode: 400, message: "Email \u0438 \u043F\u0430\u0440\u043E\u043B\u044C \u043E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u043D\u044B" });
   }
+  console.log("[auth/login] attempt for email:", body.email);
   const user = await queryOne(
     "SELECT id, username, email, password_hash, role, bio, location FROM users WHERE email = $1",
     [body.email.toLowerCase()]
   );
+  console.log("[auth/login] user found:", !!user, "email:", user == null ? void 0 : user.email, "hash_len:", (_a = user == null ? void 0 : user.password_hash) == null ? void 0 : _a.length);
   if (!user || !verifyPassword(body.password, user.password_hash)) {
     throw createError({ statusCode: 401, message: "\u041D\u0435\u0432\u0435\u0440\u043D\u044B\u0439 email \u0438\u043B\u0438 \u043F\u0430\u0440\u043E\u043B\u044C" });
   }

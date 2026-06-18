@@ -9,6 +9,8 @@ export default defineEventHandler(async (event) => {
   if (!body?.email || !body?.password) {
     throw createError({ statusCode: 400, message: 'Email и пароль обязательны' })
   }
+  // Debug: log incoming email
+  console.log('[auth/login] attempt for email:', body.email)
 
   const user = await queryOne<{
     id: string; username: string; email: string;
@@ -17,6 +19,9 @@ export default defineEventHandler(async (event) => {
     'SELECT id, username, email, password_hash, role, bio, location FROM users WHERE email = $1',
     [body.email.toLowerCase()],
   )
+
+  // Debug: show whether user found and hash length
+  console.log('[auth/login] user found:', !!user, 'email:', user?.email, 'hash_len:', user?.password_hash?.length)
 
   if (!user || !verifyPassword(body.password, user.password_hash)) {
     throw createError({ statusCode: 401, message: 'Неверный email или пароль' })

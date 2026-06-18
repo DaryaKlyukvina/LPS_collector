@@ -11,17 +11,17 @@
 
 html, body { height: 100%; }
 
+.pawed {
+  background-image: $paw-tile;
+  background-color: $bg-page;
+}
+
 body {
   font-family: $font-body;
   background: $bg-page;
   color: $ink;
   -webkit-font-smoothing: antialiased;
   line-height: 1.5;
-}
-
-body.pawed {
-  background-image: $paw-tile;
-  background-color: $bg-page;
 }
 
 // ── Каркас ───────────────────────────────────────────────────

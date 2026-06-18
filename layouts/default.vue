@@ -1,5 +1,5 @@
 <template>
-  <body class="pawed">
+  <div class="pawed">
     <div class="screen">
       <nav>
         <NuxtLink class="logo" to="/">
@@ -27,8 +27,8 @@
             </NuxtLink>
           </template>
           <template v-else>
-            <NuxtLink class="btn btn-ghost btn-sm" to="/auth">Войти</NuxtLink>
-            <NuxtLink class="btn btn-primary btn-sm" to="/auth">Регистрация</NuxtLink>
+            <NuxtLink class="btn btn-ghost btn-sm" to="/auth/login">Войти</NuxtLink>
+            <NuxtLink class="btn btn-primary btn-sm" to="/auth/register">Регистрация</NuxtLink>
           </template>
         </div>
       </nav>
@@ -46,7 +46,7 @@
         </div>
       </footer>
     </div>
-  </body>
+  </div>
 </template>
 
 <script setup lang="ts">

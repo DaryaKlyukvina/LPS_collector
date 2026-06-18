@@ -11,7 +11,7 @@
         <NuxtLink class="btn btn-primary btn-lg" to="/catalog">
           <i class="ti ti-layout-grid" /> Смотреть каталог
         </NuxtLink>
-        <NuxtLink class="btn btn-ghost btn-lg" to="/auth">
+        <NuxtLink class="btn btn-ghost btn-lg" :to="auth.isLoggedIn ? '/profile' : '/auth/register'">
           Создать коллекцию <i class="ti ti-arrow-right" />
         </NuxtLink>
       </div>
@@ -67,7 +67,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts">const auth = useAuthStore()
 const TINTS = ['lav','mint','peach','butter','pink','sky']
 const SPECIES_TINTS: Record<string, string> = {
   'Собака': 'lav', 'Кошка': 'mint', 'Кролик': 'peach',
