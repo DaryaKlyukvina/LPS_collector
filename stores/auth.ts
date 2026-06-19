@@ -42,10 +42,10 @@ export const useAuthStore = defineStore('auth', () => {
     await $fetch('/api/auth/logout', { method: 'POST' }).catch(() => {})
     user.value  = null
     token.value = null
-    navigateTo('/auth')
+    navigateTo('/')
   }
 
-  async function updateProfile(data: { bio?: string; location?: string; avatarUrl?: string }) {
+  async function updateProfile(data: { bio?: string; location?: string; avatar_url?: string }) {
     const updated = await $fetch<User>('/api/users/me', { method: 'PATCH', body: data })
     if (user.value) Object.assign(user.value, updated)
     return updated

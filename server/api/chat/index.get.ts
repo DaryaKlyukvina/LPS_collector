@@ -47,17 +47,17 @@ export default defineEventHandler(async (event) => {
 
   return rows.map(r => ({
     id: r.id,
-    createdAt: r.created_at,
+    created_at: r.created_at,
     partner: {
       id: r.partner_id,
       username: r.partner_username,
-      avatarUrl: r.partner_avatar ?? '/images/avatars/default_avatar.svg',
+      avatar_url: r.partner_avatar ?? '/images/avatars/default_avatar.svg',
     },
     lastMessage: r.last_msg_id ? {
       id: r.last_msg_id,
       body: r.last_msg_body,
       isMine: r.last_msg_sender === userId,
-      createdAt: r.last_msg_at,
+      created_at: r.last_msg_at,
     } : null,
     unreadCount: Number(r.unread_count),
   }))

@@ -4,7 +4,7 @@
     <div class="profile-header">
       <img
         class="av-big"
-        :src="user.avatarUrl ?? '/images/avatars/default_avatar.svg'"
+        :src="user.avatar_url ?? '/images/avatars/default_avatar.svg'"
         :alt="user.username"
       >
       <div>
@@ -54,56 +54,50 @@
         </div>
       </div>
       <div class="col-grid">
-        <NuxtLink
-          v-for="item in filteredCol" :key="item.id"
-          class="col-card" :to="`/pets/${item.pet.id}`"
-        >
-          <div class="col-img fig" :class="`tint-${speciesTint(item.pet)}`">
-            <img :src="item.pet.imageUrl ?? '/images/placeholders/pet_thumb.svg'" :alt="item.pet.name">
-          </div>
-          <div class="col-body">
-            <div class="col-num">#{{ String(item.pet.number).padStart(4,'0') }}</div>
-            <div class="col-name">{{ item.pet.name }}</div>
-            <div v-if="item.note" class="col-note">«{{ item.note }}»</div>
-            <div class="col-foot">
-              <span v-if="item.pet.releaseType" class="rar" :class="item.pet.releaseType.isExclusive ? 'rar-exclusive' : 'rar-common'">
-                {{ item.pet.releaseType.label }}
-              </span>
-              <div class="own-actions">
+        <div v-for="item in filteredCol" :key="item.id" class="col-card">
+          <NuxtLink class="col-link" :to="`/pets/${item.pet.id}`">
+            <div class="col-img fig" :class="`tint-${speciesTint(item.pet)}`">
+              <img :src="item.pet.imageUrl ?? '/images/placeholders/pet_thumb.svg'" :alt="item.pet.name">
+            </div>
+            <div class="col-body">
+              <div class="col-num">#{{ String(item.pet.number).padStart(4,'0') }}</div>
+              <div class="col-name">{{ item.pet.name }}</div>
+              <div v-if="item.note" class="col-note">«{{ item.note }}»</div>
+              <div class="col-foot">
+                <span v-if="item.pet.releaseType" class="rar" :class="item.pet.releaseType.isExclusive ? 'rar-exclusive' : 'rar-common'">
+                  {{ item.pet.releaseType.label }}
+                </span>
                 <span class="oa" title="Редактировать заметку" @click.prevent="editNote(item)">
                   <i class="ti ti-edit" />
                 </span>
-                <span class="oa oa-d" title="Удалить" @click.prevent="removeFromCol(item.id)">
-                  <i class="ti ti-trash" />
-                </span>
               </div>
             </div>
-          </div>
-        </NuxtLink>
+          </NuxtLink>
+          <button class="remove-btn" @click="removeFromCol(item.id)">
+            <i class="ti ti-x" /> Убрать из коллекции
+          </button>
+        </div>
       </div>
     </div>
 
     <!-- Вишлист -->
     <div v-if="tab === 'wish'" class="tab-content">
       <div class="wish-grid">
-        <NuxtLink
-          v-for="item in wishlist" :key="item.id"
-          class="wish-card" :to="`/pets/${item.pet.id}`"
-        >
-          <div class="wish-img fig" :class="`tint-${speciesTint(item.pet)}`">
-            <img :src="item.pet.imageUrl ?? '/images/placeholders/pet_thumb.svg'" :alt="item.pet.name">
-          </div>
-          <div class="wish-body">
-            <div class="wish-num">#{{ String(item.pet.number).padStart(4,'0') }}</div>
-            <div class="wish-name">{{ item.pet.name }}</div>
-            <div class="wish-foot">
-              <span class="wish-gen">{{ item.pet.genLabel }} · {{ item.pet.moldName }}</span>
-              <button class="move-btn" @click.prevent="moveToCol(item)">
-                <i class="ti ti-arrow-right" /> В коллекцию
-              </button>
+        <div v-for="item in wishlist" :key="item.id" class="wish-card">
+          <NuxtLink class="wish-link" :to="`/pets/${item.pet.id}`">
+            <div class="wish-img fig" :class="`tint-${speciesTint(item.pet)}`">
+              <img :src="item.pet.imageUrl ?? '/images/placeholders/pet_thumb.svg'" :alt="item.pet.name">
             </div>
-          </div>
-        </NuxtLink>
+            <div class="wish-body">
+              <div class="wish-num">#{{ String(item.pet.number).padStart(4,'0') }}</div>
+              <div class="wish-name">{{ item.pet.name }}</div>
+              <div class="wish-gen">{{ item.pet.genLabel }} · {{ item.pet.moldName }}</div>
+            </div>
+          </NuxtLink>
+          <button class="move-btn" @click="moveToCol(item)">
+            <i class="ti ti-arrow-right" /> В коллекцию
+          </button>
+        </div>
       </div>
     </div>
 
@@ -148,7 +142,7 @@ const showEdit = ref(false)
 
 const user = computed(() => auth.user!)
 const joinDate = computed(() =>
-  new Date(user.value.createdAt ?? '').toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' })
+  new Date(user.value.created_at ?? '').toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' })
 )
 
 const SPECIES_TINTS: Record<string, string> = {
@@ -246,26 +240,61 @@ async function saveProfile() {
 
 .col-grid, .wish-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 13px; }
 
-.col-card, .wish-card { @include card; text-decoration: none; color: inherit; }
+// Карточка теперь не сама ссылка — внутри неё ссылка + кнопка под ней
+.col-card, .wish-card {
+  @include card;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.col-link, .wish-link { text-decoration: none; color: inherit; display: block; }
+
 .col-img, .wish-img   { height: 82px; overflow: hidden; img { width: 100%; height: 100%; object-fit: contain; padding: 4px; } }
 .col-body, .wish-body { padding: 10px 12px 11px; }
 .col-num, .wish-num   { font-size: 10.5px; color: $ink-3; font-weight: 700; }
 .col-name, .wish-name { @include font-display(13.5px, 600); margin-top: 1px; }
 .col-note { font-size: 11px; color: $ink-2; margin-top: 4px; font-style: italic; line-height: 1.4; }
-.col-foot, .wish-foot { @include flex-row(0, space-between); margin-top: 9px; }
+.col-foot { @include flex-row(0, space-between); margin-top: 9px; }
+.wish-gen { font-size: 11px; color: $ink-2; font-weight: 600; margin-top: 3px; }
 
-.own-actions { @include flex-row(3px); }
 .oa {
   font-size: 15px; color: $ink-3; cursor: pointer; padding: 3px; border-radius: 6px; transition: .14s;
   &:hover { background: $bg-inset; color: $ink; }
-  &-d:hover { color: $danger; background: $danger-tint; }
 }
 
-.wish-gen { font-size: 11px; color: $ink-2; font-weight: 600; }
+// Кнопка «Убрать из коллекции» — полноразмерная, во всю ширину карточки
+.remove-btn {
+  width: 100%;
+  font-size: 11.5px; font-weight: 700;
+  padding: 8px 9px;
+  border: none;
+  border-top: 1px solid $line;
+  border-radius: 0;
+  color: $danger; background: $danger-tint;
+  cursor: pointer;
+  @include flex-center(5px);
+  font-family: $font-body;
+  transition: .14s;
+
+  &:hover { filter: brightness(0.96); }
+}
+
+// Кнопка «В коллекцию» из вишлиста — тот же принцип, зелёная
 .move-btn {
-  font-size: 10.5px; font-weight: 700; padding: 4px 9px; border-radius: $r-pill;
-  border: 1px solid $success-line; color: $success; background: $success-tint; cursor: pointer;
-  @include flex-row(3px); font-family: $font-body;
+  width: 100%;
+  font-size: 11.5px; font-weight: 700;
+  padding: 8px 9px;
+  border: none;
+  border-top: 1px solid $line;
+  border-radius: 0;
+  color: $success; background: $success-tint;
+  cursor: pointer;
+  @include flex-center(5px);
+  font-family: $font-body;
+  transition: .14s;
+
+  &:hover { filter: brightness(.97); }
 }
 
 .edit-field {

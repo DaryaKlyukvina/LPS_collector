@@ -21,7 +21,7 @@
             <NuxtLink to="/profile" class="avatar-link">
               <img
                 class="avatar"
-                :src="auth.user?.avatarUrl ?? '/images/avatars/default_avatar.svg'"
+                :src="auth.user?.avatar_url ?? '/images/avatars/default_avatar.svg'"
                 :alt="auth.user?.username"
               >
             </NuxtLink>
@@ -38,7 +38,7 @@
       <footer>
         <div class="footer-l">
           <i class="ti ti-paw-filled" style="color:var(--brand-line)" />
-          © 2025 LPS коллекционер
+          © 2026 LPS коллекционер
         </div>
         <div class="footer-r">
           <NuxtLink to="/">Главная</NuxtLink>

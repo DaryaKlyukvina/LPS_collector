@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
 
   const rows = await query(
     `SELECT
-       ci.id, ci.note, ci.condition, ci.acquired_at, ci.added_at,
+       ci.id, ci.note, ci.acquired_at, ci.added_at,
        p.id AS pet_id, p.number, p.name,
        p.has_flocking, p.has_magnet, p.image_url,
        p.release_type_id,
@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
   )
 
   return rows.map(r => ({
-    id: r.id, note: r.note, condition: r.condition,
+    id: r.id, note: r.note,
     acquiredAt: r.acquired_at, addedAt: r.added_at,
     pet: {
       id: r.pet_id, number: r.number, name: r.name,

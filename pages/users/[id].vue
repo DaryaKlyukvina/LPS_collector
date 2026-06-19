@@ -2,7 +2,7 @@
   <div v-if="profile">
     <!-- Шапка профиля -->
     <div class="profile-header">
-      <img class="av-big" :src="profile.avatarUrl" :alt="profile.username">
+      <img class="av-big" :src="profile.avatar_url" :alt="profile.username">
       <div class="profile-info">
         <div class="profile-name">@{{ profile.username }}</div>
         <div class="profile-join">
@@ -114,8 +114,8 @@ const filteredCol = computed(() =>
 const tab = ref('col')
 
 const joinDate = computed(() => {
-  if (!profile.value?.createdAt) return ''
-  return new Date(profile.value.createdAt).toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' })
+  if (!profile.value?.created_at) return ''
+  return new Date(profile.value.created_at).toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' })
 })
 
 const SPECIES_TINTS: Record<string, string> = {

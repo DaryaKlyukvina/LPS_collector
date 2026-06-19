@@ -50,7 +50,7 @@
             </button>
           </template>
           <template v-else>
-            <NuxtLink class="btn btn-primary" to="/auth">
+            <NuxtLink class="btn btn-primary" to="/auth/login">
               <i class="ti ti-login-2" /> Войти чтобы добавить
             </NuxtLink>
           </template>

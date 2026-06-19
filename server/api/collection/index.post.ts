@@ -5,16 +5,16 @@ import { requireAuth } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const payload = requireAuth(event)
-  const body = await readBody<{ petId: string; note?: string; condition?: string }>(event)
+  const body = await readBody<{ petId: string; note?: string; acquiredAt?: string }>(event)
 
   if (!body?.petId) throw createError({ statusCode: 400, message: 'petId обязателен' })
 
   const rows = await query(
-    `INSERT INTO collection_items (user_id, pet_id, note, condition)
+    `INSERT INTO collection_items (user_id, pet_id, note, acquired_at)
      VALUES ($1, $2, $3, $4)
      ON CONFLICT (user_id, pet_id) DO NOTHING
      RETURNING id`,
-    [payload.sub, body.petId, body.note ?? null, body.condition ?? null],
+    [payload.sub, body.petId, body.note ?? null, body.acquiredAt ?? null],
   )
 
   if (!rows.length) {

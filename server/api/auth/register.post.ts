@@ -25,10 +25,10 @@ export default defineEventHandler(async (event) => {
 
   const hash = hashPassword(body.password)
 
-  const rows = await query<{ id: string; username: string; email: string; role: string }>(
+  const rows = await query<{ id: string; username: string; email: string; role: string; bio: string | null; location: string | null; avatar_url: string | null; created_at: string }>(
     `INSERT INTO users (username, email, password_hash, role)
      VALUES ($1, $2, $3, 'user')
-     RETURNING id, username, email, role`,
+     RETURNING id, username, email, role, bio, location, avatar_url, created_at`,
     [body.username, body.email.toLowerCase(), hash],
   )
 

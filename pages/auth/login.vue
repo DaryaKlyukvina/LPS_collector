@@ -27,12 +27,17 @@
         <button class="btn btn-primary btn-submit" :disabled="loginPending" @click="doLogin">
           <i class="ti ti-login-2" /> {{ loginPending ? 'Входим...' : 'Войти' }}
         </button>
-        <div class="divider-row">
-          <div class="divider-line" /><span class="divider-txt">или</span><div class="divider-line" />
-        </div>
-        <button class="btn btn-ghost btn-google">
-          <i class="ti ti-brand-google" /> Войти через Google
-        </button>
+
+        <!-- TODO: вернуть вход через Google когда подключим OAuth -->
+        <template v-if="false">
+          <div class="divider-row">
+            <div class="divider-line" /><span class="divider-txt">или</span><div class="divider-line" />
+          </div>
+          <button class="btn btn-ghost btn-google">
+            <i class="ti ti-brand-google" /> Войти через Google
+          </button>
+        </template>
+
         <div class="hint-row">
           <span>Нет аккаунта?</span>
           <NuxtLink to="/auth/register" class="hint-link">Зарегистрироваться</NuxtLink>

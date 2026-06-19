@@ -13,7 +13,8 @@ export interface User {
   role: Role
   bio?: string
   location?: string
-  createdAt: string
+  avatar_url?: string
+  created_at: string
   // НЕ хранить passwordHash на клиенте
 }
 

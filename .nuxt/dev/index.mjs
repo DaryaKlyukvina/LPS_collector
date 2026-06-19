@@ -2165,7 +2165,22 @@ _gZOTwdHeHYRTr63FrCIZuXHqHoL0kqT_lwg8kFYE,
 _wH6JrtIxmaSoA8lCPWFnE9z4lQeXW6H5z3l5aymEQw
 ];
 
-const assets = {};
+const assets = {
+  "/index.mjs.map": {
+    "type": "application/json",
+    "etag": "\"9549c-zZhNjuSIGSTYX4cQI+KqyNuYhF0\"",
+    "mtime": "2026-06-19T00:50:14.496Z",
+    "size": 611484,
+    "path": "index.mjs.map"
+  },
+  "/index.mjs": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": "\"26d9b-4+0O1Q6wbla72cb84Hj3eCCpp94\"",
+    "mtime": "2026-06-19T00:50:14.494Z",
+    "size": 159131,
+    "path": "index.mjs"
+  }
+};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -3203,17 +3218,14 @@ function requireRole(event, ...roles) {
 }
 
 const login_post = defineEventHandler(async (event) => {
-  var _a;
   const body = await readBody(event);
   if (!(body == null ? void 0 : body.email) || !(body == null ? void 0 : body.password)) {
     throw createError({ statusCode: 400, message: "Email \u0438 \u043F\u0430\u0440\u043E\u043B\u044C \u043E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u043D\u044B" });
   }
-  console.log("[auth/login] attempt for email:", body.email);
   const user = await queryOne(
-    "SELECT id, username, email, password_hash, role, bio, location FROM users WHERE email = $1",
+    "SELECT id, username, email, password_hash, role, bio, location, avatar_url, created_at FROM users WHERE email = $1",
     [body.email.toLowerCase()]
   );
-  console.log("[auth/login] user found:", !!user, "email:", user == null ? void 0 : user.email, "hash_len:", (_a = user == null ? void 0 : user.password_hash) == null ? void 0 : _a.length);
   if (!user || !verifyPassword(body.password, user.password_hash)) {
     throw createError({ statusCode: 401, message: "\u041D\u0435\u0432\u0435\u0440\u043D\u044B\u0439 email \u0438\u043B\u0438 \u043F\u0430\u0440\u043E\u043B\u044C" });
   }
@@ -3234,7 +3246,9 @@ const login_post = defineEventHandler(async (event) => {
       email: user.email,
       role: user.role,
       bio: user.bio,
-      location: user.location
+      location: user.location,
+      avatar_url: user.avatar_url,
+      created_at: user.created_at
     }
   };
 });
@@ -3262,7 +3276,7 @@ const logout_post$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.definePrope
 const me_get = defineEventHandler(async (event) => {
   const payload = requireAuth(event);
   const user = await queryOne(
-    "SELECT id, username, email, role, bio, location, created_at FROM users WHERE id = $1",
+    "SELECT id, username, email, role, bio, location, avatar_url, created_at FROM users WHERE id = $1",
     [payload.sub]
   );
   if (!user) throw createError({ statusCode: 404, message: "\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D" });
@@ -3293,7 +3307,7 @@ const register_post = defineEventHandler(async (event) => {
   const rows = await query(
     `INSERT INTO users (username, email, password_hash, role)
      VALUES ($1, $2, $3, 'user')
-     RETURNING id, username, email, role`,
+     RETURNING id, username, email, role, bio, location, avatar_url, created_at`,
     [body.username, body.email.toLowerCase(), hash]
   );
   const user = rows[0];
@@ -3503,17 +3517,17 @@ const index_get$8 = defineEventHandler(async (event) => {
     var _a;
     return {
       id: r.id,
-      createdAt: r.created_at,
+      created_at: r.created_at,
       partner: {
         id: r.partner_id,
         username: r.partner_username,
-        avatarUrl: (_a = r.partner_avatar) != null ? _a : "/images/avatars/default_avatar.svg"
+        avatar_url: (_a = r.partner_avatar) != null ? _a : "/images/avatars/default_avatar.svg"
       },
       lastMessage: r.last_msg_id ? {
         id: r.last_msg_id,
         body: r.last_msg_body,
         isMine: r.last_msg_sender === userId,
-        createdAt: r.last_msg_at
+        created_at: r.last_msg_at
       } : null,
       unreadCount: Number(r.unread_count)
     };
@@ -3555,9 +3569,9 @@ const _id__patch$6 = defineEventHandler(async (event) => {
   await queryOne(
     `UPDATE collection_items SET
        note = COALESCE($1, note),
-       condition = COALESCE($2, condition)
+       acquired_at = COALESCE($2, acquired_at)
      WHERE id = $3`,
-    [(_a = body.note) != null ? _a : null, (_b = body.condition) != null ? _b : null, id]
+    [(_a = body.note) != null ? _a : null, (_b = body.acquiredAt) != null ? _b : null, id]
   );
   return { ok: true };
 });
@@ -3571,7 +3585,7 @@ const index_get$6 = defineEventHandler(async (event) => {
   const payload = requireAuth(event);
   const rows = await query(
     `SELECT
-       ci.id, ci.note, ci.condition, ci.acquired_at, ci.added_at,
+       ci.id, ci.note, ci.acquired_at, ci.added_at,
        p.id AS pet_id, p.number, p.name,
        p.has_flocking, p.has_magnet, p.image_url,
        p.release_type_id,
@@ -3590,7 +3604,6 @@ const index_get$6 = defineEventHandler(async (event) => {
   return rows.map((r) => ({
     id: r.id,
     note: r.note,
-    condition: r.condition,
     acquiredAt: r.acquired_at,
     addedAt: r.added_at,
     pet: {
@@ -3618,11 +3631,11 @@ const index_post$8 = defineEventHandler(async (event) => {
   const body = await readBody(event);
   if (!(body == null ? void 0 : body.petId)) throw createError({ statusCode: 400, message: "petId \u043E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u0435\u043D" });
   const rows = await query(
-    `INSERT INTO collection_items (user_id, pet_id, note, condition)
+    `INSERT INTO collection_items (user_id, pet_id, note, acquired_at)
      VALUES ($1, $2, $3, $4)
      ON CONFLICT (user_id, pet_id) DO NOTHING
      RETURNING id`,
-    [payload.sub, body.petId, (_a = body.note) != null ? _a : null, (_b = body.condition) != null ? _b : null]
+    [payload.sub, body.petId, (_a = body.note) != null ? _a : null, (_b = body.acquiredAt) != null ? _b : null]
   );
   if (!rows.length) {
     throw createError({ statusCode: 409, message: "\u0424\u0438\u0433\u0443\u0440\u043A\u0430 \u0443\u0436\u0435 \u0435\u0441\u0442\u044C \u0432 \u043A\u043E\u043B\u043B\u0435\u043A\u0446\u0438\u0438" });
@@ -4214,7 +4227,6 @@ const index_get$3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.definePropert
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const me_patch = defineEventHandler(async (event) => {
-  var _a;
   const { sub: userId } = requireAuth(event);
   const body = await readBody(event);
   const fields = [];
@@ -4230,25 +4242,19 @@ const me_patch = defineEventHandler(async (event) => {
     params.push(body.location);
     pi++;
   }
-  if (body.avatarUrl !== void 0) {
+  if (body.avatar_url !== void 0) {
     fields.push(`avatar_url = $${pi}`);
-    params.push(body.avatarUrl);
+    params.push(body.avatar_url);
     pi++;
   }
   if (!fields.length) throw createError({ statusCode: 400, message: "\u041D\u0435\u0442 \u043F\u043E\u043B\u0435\u0439 \u0434\u043B\u044F \u043E\u0431\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F" });
   params.push(userId);
   const updated = await queryOne(
     `UPDATE users SET ${fields.join(", ")} WHERE id = $${pi}
-     RETURNING id, username, bio, location, avatar_url`,
+     RETURNING id, username, email, role, bio, location, avatar_url, created_at`,
     params
   );
-  return {
-    id: updated.id,
-    username: updated.username,
-    bio: updated.bio,
-    location: updated.location,
-    avatarUrl: (_a = updated.avatar_url) != null ? _a : "/images/avatars/default_avatar.svg"
-  };
+  return updated;
 });
 
 const me_patch$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({

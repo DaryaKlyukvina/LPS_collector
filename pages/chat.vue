@@ -20,13 +20,13 @@
         >
           <img
             class="avatar th-av"
-            :src="conv.partner.avatarUrl"
+            :src="conv.partner.avatar_url"
             :alt="conv.partner.username"
           >
           <div class="thread-info">
             <div class="thread-top">
               <span class="thread-name">@{{ conv.partner.username }}</span>
-              <span class="thread-time">{{ formatTime(conv.lastMessage?.createdAt) }}</span>
+              <span class="thread-time">{{ formatTime(conv.lastMessage?.created_at) }}</span>
             </div>
             <div class="thread-last">
               <template v-if="conv.lastMessage">
@@ -56,7 +56,7 @@
       <template v-else>
         <!-- Шапка -->
         <div class="convo-head">
-          <img class="avatar" :src="activeConv.partner.avatarUrl" :alt="activeConv.partner.username">
+          <img class="avatar" :src="activeConv.partner.avatar_url" :alt="activeConv.partner.username">
           <div class="convo-head-info">
             <div class="convo-head-name">
               <NuxtLink :to="`/users/${activeConv.partner.id}`">@{{ activeConv.partner.username }}</NuxtLink>
