@@ -16,7 +16,7 @@
         <div class="nav-right">
           <template v-if="auth.isLoggedIn">
             <NuxtLink v-if="auth.isAdmin" to="/admin" class="btn btn-soft btn-sm">
-              <i class="ti ti-shield" /> Админ
+              <i class="ti ti-shield" /> Админка
             </NuxtLink>
             <NuxtLink to="/profile" class="avatar-link">
               <img

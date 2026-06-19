@@ -2166,19 +2166,19 @@ _wH6JrtIxmaSoA8lCPWFnE9z4lQeXW6H5z3l5aymEQw
 ];
 
 const assets = {
+  "/index.mjs": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": "\"26e43-C6AfQaolUXgCwfvn7kbbt7w+E34\"",
+    "mtime": "2026-06-19T01:09:19.586Z",
+    "size": 159299,
+    "path": "index.mjs"
+  },
   "/index.mjs.map": {
     "type": "application/json",
     "etag": "\"95790-Es+BLin0XZi3gdYmNHzSn8x2kSA\"",
-    "mtime": "2026-06-19T01:09:18.947Z",
+    "mtime": "2026-06-19T01:09:19.588Z",
     "size": 612240,
     "path": "index.mjs.map"
-  },
-  "/index.mjs": {
-    "type": "text/javascript; charset=utf-8",
-    "etag": "\"26e43-w4b/rOMt1Weh6MM+QAldMcZJhyE\"",
-    "mtime": "2026-06-19T01:09:18.947Z",
-    "size": 159299,
-    "path": "index.mjs"
   }
 };
 
@@ -3868,7 +3868,7 @@ const index_get$4 = defineEventHandler(async (event) => {
   const sortMap = {
     number: "p.number ASC",
     name: "p.name ASC",
-    rarity: "rt.sort_order ASC",
+    release_type: "rt.sort_order ASC",
     generation: "g.number ASC, p.number ASC"
   };
   const orderBy = (_b = sortMap[sort]) != null ? _b : sortMap.number;

@@ -16,9 +16,9 @@
       <div class="filter-group">
         <div class="filter-label">Редкость</div>
         <div class="filter-opts">
-          <label v-for="r in rarities" :key="r.value" class="fopt">
-            <input v-model="filters.rarity" type="checkbox" :value="r.value">
-            {{ r.label }}
+          <label v-for="rt in releaseTypes" :key="rt.value" class="fopt">
+            <input v-model="filters.releaseTypeSlugs" type="checkbox" :value="rt.value">
+            {{ rt.label }}
           </label>
         </div>
       </div>
@@ -47,7 +47,7 @@
         <select v-model="filters.sort" class="sort-sel">
           <option value="number">По номеру</option>
           <option value="name">По названию</option>
-          <option value="rarity">По редкости</option>
+          <option value="release_type">По редкости</option>
           <option value="generation">По поколению</option>
         </select>
       </div>
@@ -105,15 +105,21 @@ function tintFor(pet: any) {
 }
 
 const generations = [1,2,3,4,5,6,7]
-const rarities = [
-  { value: 'common',    label: 'Обычная' },
-  { value: 'rare',      label: 'Редкая' },
-  { value: 'special',   label: 'Спец. серия' },
-  { value: 'exclusive', label: 'Эксклюзив' },
+const releaseTypes = [
+  { value: 'regular',  label: 'Regular' },
+  { value: 'special',  label: 'Special' },
+  { value: 'advent',   label: 'Advent' },
+  { value: 'puzzle',   label: 'Puzzle' },
+  { value: 'toysrus',  label: 'Toys"R"Us Exclusive' },
+  { value: 'target',   label: 'Target Exclusive' },
+  { value: 'walmart',  label: 'Walmart Exclusive' },
+  { value: 'costco',   label: 'Costco Exclusive' },
+  { value: 'kohls',    label: 'Kohl\'s Exclusive' },
+  { value: 'kmart',    label: 'Kmart Exclusive' },
 ]
 
 const filters = reactive({
-  search: '', generations: [] as number[], rarity: [] as string[],
+  search: '', generations: [] as number[], releaseTypeSlugs: [] as string[],
   hasFlocking: false, hasMagnet: false, hasGlitter: false,
   sort: 'number', page: 1,
 })
@@ -122,7 +128,7 @@ const { data } = await useFetch('/api/pets', {
   query: computed(() => ({
     search: filters.search || undefined,
     generations: filters.generations.join(',') || undefined,
-    releaseTypeSlugs: filters.rarity.join(',') || undefined,
+    releaseTypeSlugs: filters.releaseTypeSlugs.join(',') || undefined,
     hasFlocking: filters.hasFlocking || undefined,
     hasMagnet: filters.hasMagnet || undefined,
     hasGlitter: filters.hasGlitter || undefined,
@@ -145,7 +151,7 @@ function toggleGen(g: number) {
 }
 
 function clearFilters() {
-  Object.assign(filters, { search: '', generations: [], rarity: [], hasFlocking: false, hasMagnet: false, hasGlitter: false, page: 1 })
+  Object.assign(filters, { search: '', generations: [], releaseTypeSlugs: [], hasFlocking: false, hasMagnet: false, hasGlitter: false, page: 1 })
 }
 
 // Лайки (вишлист) — упрощённый стейт

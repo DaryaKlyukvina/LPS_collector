@@ -26,7 +26,7 @@
     <div class="stats">
       <div class="stat"><div class="stat-n">3 200+</div><div class="stat-l">фигурок в базе</div></div>
       <div class="stat"><div class="stat-n">7</div><div class="stat-l">поколений LPS</div></div>
-      <div class="stat"><div class="stat-n">840+</div><div class="stat-l">молдов</div></div>
+      <div class="stat"><div class="stat-n">85+</div><div class="stat-l">молдов</div></div>
     </div>
 
     <!-- Недавно добавлены -->

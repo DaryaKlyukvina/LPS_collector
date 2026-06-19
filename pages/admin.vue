@@ -107,7 +107,7 @@ const menuItems = [
 const stats = [
   { label: 'Фигурок в базе',       value: '3 214', trend: 1, sub: '+12 за неделю' },
   { label: 'Пользователей',        value: '847',   trend: 1, sub: '+23 за неделю' },
-  { label: 'Записей в коллекциях', value: '18 402',trend: 1, sub: '+341 за неделю' },
+  { label: 'Успешных обменов', value: '402',    trend: 1, sub: '+30 за неделю' },
   { label: 'На модерации',         value: '4',     trend: -1,sub: 'Требует внимания' },
 ]
 

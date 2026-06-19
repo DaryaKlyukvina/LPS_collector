@@ -59,10 +59,10 @@ export default defineEventHandler(async (event) => {
 
   // Сортировка (только whitelist!)
   const sortMap: Record<string, string> = {
-    number:     'p.number ASC',
-    name:       'p.name ASC',
-    rarity:     'rt.sort_order ASC',
-    generation: 'g.number ASC, p.number ASC',
+    number:       'p.number ASC',
+    name:         'p.name ASC',
+    release_type: 'rt.sort_order ASC',
+    generation:   'g.number ASC, p.number ASC',
   }
   const orderBy = sortMap[sort] ?? sortMap.number
 
