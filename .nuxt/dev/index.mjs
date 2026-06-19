@@ -2168,16 +2168,16 @@ _wH6JrtIxmaSoA8lCPWFnE9z4lQeXW6H5z3l5aymEQw
 const assets = {
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"9549c-zZhNjuSIGSTYX4cQI+KqyNuYhF0\"",
-    "mtime": "2026-06-19T00:50:14.496Z",
-    "size": 611484,
+    "etag": "\"95790-Es+BLin0XZi3gdYmNHzSn8x2kSA\"",
+    "mtime": "2026-06-19T01:09:18.947Z",
+    "size": 612240,
     "path": "index.mjs.map"
   },
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"26d9b-4+0O1Q6wbla72cb84Hj3eCCpp94\"",
-    "mtime": "2026-06-19T00:50:14.494Z",
-    "size": 159131,
+    "etag": "\"26e43-w4b/rOMt1Weh6MM+QAldMcZJhyE\"",
+    "mtime": "2026-06-19T01:09:18.947Z",
+    "size": 159299,
     "path": "index.mjs"
   }
 };
@@ -3276,7 +3276,7 @@ const logout_post$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.definePrope
 const me_get = defineEventHandler(async (event) => {
   const payload = requireAuth(event);
   const user = await queryOne(
-    "SELECT id, username, email, role, bio, location, avatar_url, created_at FROM users WHERE id = $1",
+    "SELECT id, username, email, role, bio, location, created_at FROM users WHERE id = $1",
     [payload.sub]
   );
   if (!user) throw createError({ statusCode: 404, message: "\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D" });
@@ -4227,6 +4227,7 @@ const index_get$3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.definePropert
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const me_patch = defineEventHandler(async (event) => {
+  var _a;
   const { sub: userId } = requireAuth(event);
   const body = await readBody(event);
   const fields = [];
@@ -4242,19 +4243,25 @@ const me_patch = defineEventHandler(async (event) => {
     params.push(body.location);
     pi++;
   }
-  if (body.avatar_url !== void 0) {
+  if (body.avatarUrl !== void 0) {
     fields.push(`avatar_url = $${pi}`);
-    params.push(body.avatar_url);
+    params.push(body.avatarUrl);
     pi++;
   }
   if (!fields.length) throw createError({ statusCode: 400, message: "\u041D\u0435\u0442 \u043F\u043E\u043B\u0435\u0439 \u0434\u043B\u044F \u043E\u0431\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F" });
   params.push(userId);
   const updated = await queryOne(
     `UPDATE users SET ${fields.join(", ")} WHERE id = $${pi}
-     RETURNING id, username, email, role, bio, location, avatar_url, created_at`,
+     RETURNING id, username, bio, location, avatar_url`,
     params
   );
-  return updated;
+  return {
+    id: updated.id,
+    username: updated.username,
+    bio: updated.bio,
+    location: updated.location,
+    avatarUrl: (_a = updated.avatar_url) != null ? _a : "/images/avatars/default_avatar.svg"
+  };
 });
 
 const me_patch$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
