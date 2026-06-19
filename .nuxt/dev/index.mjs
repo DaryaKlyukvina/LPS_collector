@@ -2060,7 +2060,7 @@ const _pR8WDU1Akne59t3rXvSO9U6nF28AK6hxwotYWkvA2m4 = (function(nitro) {
 
 const rootDir = "C:/Users/user/Downloads/lps-v3";
 
-const appHead = {"meta":[{"name":"viewport","content":"width=device-width, initial-scale=1"},{"charset":"utf-8"}],"link":[],"style":[],"script":[],"noscript":[]};
+const appHead = {"meta":[{"name":"viewport","content":"width=device-width, initial-scale=1"},{"charset":"utf-8"}],"link":[{"rel":"stylesheet","href":"https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css"}],"style":[],"script":[],"noscript":[]};
 
 const appRootTag = "div";
 
@@ -2165,22 +2165,7 @@ _gZOTwdHeHYRTr63FrCIZuXHqHoL0kqT_lwg8kFYE,
 _wH6JrtIxmaSoA8lCPWFnE9z4lQeXW6H5z3l5aymEQw
 ];
 
-const assets = {
-  "/index.mjs": {
-    "type": "text/javascript; charset=utf-8",
-    "etag": "\"271fc-UhFF+t/2LkxyJ84it1tX6rRaCk0\"",
-    "mtime": "2026-06-19T06:46:57.192Z",
-    "size": 160252,
-    "path": "index.mjs"
-  },
-  "/index.mjs.map": {
-    "type": "application/json",
-    "etag": "\"9621f-KLCYQQi7RZrIr0eMWSu1W9TFUlI\"",
-    "mtime": "2026-06-19T06:46:57.193Z",
-    "size": 614943,
-    "path": "index.mjs.map"
-  }
-};
+const assets = {};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -2735,6 +2720,7 @@ const _lazy_UAN7nN = () => Promise.resolve().then(function () { return index_pos
 const _lazy_u3hyvw = () => Promise.resolve().then(function () { return _id__delete$3; });
 const _lazy_jEENcx = () => Promise.resolve().then(function () { return _id__get$1; });
 const _lazy_3c7jJr = () => Promise.resolve().then(function () { return _id__patch$1; });
+const _lazy_Eg2CdW = () => Promise.resolve().then(function () { return ban_patch$1; });
 const _lazy_tDBTXz = () => Promise.resolve().then(function () { return collection_get$1; });
 const _lazy_rVqB0D = () => Promise.resolve().then(function () { return index_get$3; });
 const _lazy_U1BcrU = () => Promise.resolve().then(function () { return me_patch$1; });
@@ -2769,6 +2755,7 @@ const handlers = [
   { route: '/api/users/:id', handler: _lazy_u3hyvw, lazy: true, middleware: false, method: "delete" },
   { route: '/api/users/:id', handler: _lazy_jEENcx, lazy: true, middleware: false, method: "get" },
   { route: '/api/users/:id', handler: _lazy_3c7jJr, lazy: true, middleware: false, method: "patch" },
+  { route: '/api/users/:id/ban', handler: _lazy_Eg2CdW, lazy: true, middleware: false, method: "patch" },
   { route: '/api/users/:id/collection', handler: _lazy_tDBTXz, lazy: true, middleware: false, method: "get" },
   { route: '/api/users', handler: _lazy_rVqB0D, lazy: true, middleware: false, method: "get" },
   { route: '/api/users/me', handler: _lazy_U1BcrU, lazy: true, middleware: false, method: "patch" },
@@ -3225,11 +3212,17 @@ const login_post = defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, message: "Email \u0438 \u043F\u0430\u0440\u043E\u043B\u044C \u043E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u043D\u044B" });
   }
   const user = await queryOne(
-    "SELECT id, username, email, password_hash, role, bio, location, avatar_url, created_at FROM users WHERE email = $1",
+    "SELECT id, username, email, password_hash, role, bio, location, avatar_url, created_at, is_banned, ban_reason FROM users WHERE email = $1",
     [body.email.toLowerCase()]
   );
   if (!user || !verifyPassword(body.password, user.password_hash)) {
     throw createError({ statusCode: 401, message: "\u041D\u0435\u0432\u0435\u0440\u043D\u044B\u0439 email \u0438\u043B\u0438 \u043F\u0430\u0440\u043E\u043B\u044C" });
+  }
+  if (user.is_banned) {
+    throw createError({
+      statusCode: 403,
+      message: user.ban_reason ? `\u0410\u043A\u043A\u0430\u0443\u043D\u0442 \u0437\u0430\u0431\u043B\u043E\u043A\u0438\u0440\u043E\u0432\u0430\u043D. \u041F\u0440\u0438\u0447\u0438\u043D\u0430: ${user.ban_reason}` : "\u0410\u043A\u043A\u0430\u0443\u043D\u0442 \u0437\u0430\u0431\u043B\u043E\u043A\u0438\u0440\u043E\u0432\u0430\u043D"
+    });
   }
   const token = createToken(user.id, user.role);
   setCookie(event, "auth_token", token, {
@@ -3278,10 +3271,16 @@ const logout_post$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.definePrope
 const me_get = defineEventHandler(async (event) => {
   const payload = requireAuth(event);
   const user = await queryOne(
-    "SELECT id, username, email, role, bio, location, created_at FROM users WHERE id = $1",
+    "SELECT id, username, email, role, bio, location, created_at, is_banned, ban_reason FROM users WHERE id = $1",
     [payload.sub]
   );
   if (!user) throw createError({ statusCode: 404, message: "\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D" });
+  if (user.is_banned) {
+    throw createError({
+      statusCode: 403,
+      message: user.ban_reason ? `\u0410\u043A\u043A\u0430\u0443\u043D\u0442 \u0437\u0430\u0431\u043B\u043E\u043A\u0438\u0440\u043E\u0432\u0430\u043D. \u041F\u0440\u0438\u0447\u0438\u043D\u0430: ${user.ban_reason}` : "\u0410\u043A\u043A\u0430\u0443\u043D\u0442 \u0437\u0430\u0431\u043B\u043E\u043A\u0438\u0440\u043E\u0432\u0430\u043D"
+    });
+  }
   return user;
 });
 
@@ -4100,14 +4099,22 @@ const index_post$3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProper
   default: index_post$2
 }, Symbol.toStringTag, { value: 'Module' }));
 
+const PROTECTED_ADMIN_USERNAME = "admin";
+
 const _id__delete$2 = defineEventHandler(async (event) => {
   const adminPayload = requireRole(event, "admin");
   const id = getRouterParam(event, "id");
   if (id === adminPayload.sub) {
     throw createError({ statusCode: 400, message: "\u041D\u0435\u043B\u044C\u0437\u044F \u0443\u0434\u0430\u043B\u0438\u0442\u044C \u0441\u0430\u043C\u043E\u0433\u043E \u0441\u0435\u0431\u044F" });
   }
-  const user = await queryOne("SELECT id FROM users WHERE id = $1", [id]);
+  const user = await queryOne(
+    "SELECT id, username FROM users WHERE id = $1",
+    [id]
+  );
   if (!user) throw createError({ statusCode: 404, message: "\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D" });
+  if (user.username === PROTECTED_ADMIN_USERNAME) {
+    throw createError({ statusCode: 403, message: "\u041D\u0435\u043B\u044C\u0437\u044F \u0443\u0434\u0430\u043B\u0438\u0442\u044C \u0433\u043B\u0430\u0432\u043D\u043E\u0433\u043E \u0430\u0434\u043C\u0438\u043D\u0438\u0441\u0442\u0440\u0430\u0442\u043E\u0440\u0430" });
+  }
   await queryOne("DELETE FROM users WHERE id = $1", [id]);
   return { ok: true };
 });
@@ -4167,17 +4174,66 @@ const _id__patch = defineEventHandler(async (event) => {
   if (!["user", "admin"].includes(body == null ? void 0 : body.role)) {
     throw createError({ statusCode: 400, message: "\u0420\u043E\u043B\u044C \u0434\u043E\u043B\u0436\u043D\u0430 \u0431\u044B\u0442\u044C user \u0438\u043B\u0438 admin" });
   }
+  const target = await queryOne(
+    "SELECT id, username FROM users WHERE id = $1",
+    [id]
+  );
+  if (!target) throw createError({ statusCode: 404, message: "\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D" });
+  if (target.username === PROTECTED_ADMIN_USERNAME) {
+    throw createError({ statusCode: 403, message: "\u041D\u0435\u043B\u044C\u0437\u044F \u043C\u0435\u043D\u044F\u0442\u044C \u0440\u043E\u043B\u044C \u0433\u043B\u0430\u0432\u043D\u043E\u0433\u043E \u0430\u0434\u043C\u0438\u043D\u0438\u0441\u0442\u0440\u0430\u0442\u043E\u0440\u0430" });
+  }
   const updated = await queryOne(
     "UPDATE users SET role = $1 WHERE id = $2 RETURNING id, username, role",
     [body.role, id]
   );
-  if (!updated) throw createError({ statusCode: 404, message: "\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D" });
   return updated;
 });
 
 const _id__patch$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: _id__patch
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const ban_patch = defineEventHandler(async (event) => {
+  var _a;
+  const adminPayload = requireRole(event, "admin");
+  const id = getRouterParam(event, "id");
+  const body = await readBody(event);
+  if (typeof (body == null ? void 0 : body.banned) !== "boolean") {
+    throw createError({ statusCode: 400, message: "\u041F\u043E\u043B\u0435 banned \u043E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u043D\u043E (true/false)" });
+  }
+  if (id === adminPayload.sub) {
+    throw createError({ statusCode: 400, message: "\u041D\u0435\u043B\u044C\u0437\u044F \u0437\u0430\u0431\u0430\u043D\u0438\u0442\u044C \u0441\u0430\u043C\u043E\u0433\u043E \u0441\u0435\u0431\u044F" });
+  }
+  const target = await queryOne(
+    "SELECT id, username FROM users WHERE id = $1",
+    [id]
+  );
+  if (!target) throw createError({ statusCode: 404, message: "\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D" });
+  if (target.username === PROTECTED_ADMIN_USERNAME) {
+    throw createError({ statusCode: 403, message: "\u041D\u0435\u043B\u044C\u0437\u044F \u0437\u0430\u0431\u0430\u043D\u0438\u0442\u044C \u0433\u043B\u0430\u0432\u043D\u043E\u0433\u043E \u0430\u0434\u043C\u0438\u043D\u0438\u0441\u0442\u0440\u0430\u0442\u043E\u0440\u0430" });
+  }
+  if (body.banned) {
+    const reason = ((_a = body.reason) != null ? _a : "").trim();
+    if (!reason) {
+      throw createError({ statusCode: 400, message: "\u0423\u043A\u0430\u0436\u0438\u0442\u0435 \u043F\u0440\u0438\u0447\u0438\u043D\u0443 \u0431\u0430\u043D\u0430" });
+    }
+    const updated2 = await queryOne(
+      "UPDATE users SET is_banned = TRUE, ban_reason = $1 WHERE id = $2 RETURNING id, username, is_banned, ban_reason",
+      [reason, id]
+    );
+    return updated2;
+  }
+  const updated = await queryOne(
+    "UPDATE users SET is_banned = FALSE, ban_reason = NULL WHERE id = $1 RETURNING id, username, is_banned, ban_reason",
+    [id]
+  );
+  return updated;
+});
+
+const ban_patch$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: ban_patch
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const collection_get = defineEventHandler(async (event) => {
@@ -4234,6 +4290,7 @@ const index_get$2 = defineEventHandler(async (event) => {
   const rows = await query(
     `SELECT
        u.id, u.username, u.email, u.role, u.created_at,
+       u.is_banned, u.ban_reason,
        COUNT(ci.id) AS collection_count
      FROM users u
      LEFT JOIN collection_items ci ON ci.user_id = u.id
@@ -4246,6 +4303,8 @@ const index_get$2 = defineEventHandler(async (event) => {
     email: r.email,
     role: r.role,
     createdAt: r.created_at,
+    isBanned: r.is_banned,
+    banReason: r.ban_reason,
     collectionCount: Number(r.collection_count)
   }));
 });
@@ -4262,6 +4321,22 @@ const me_patch = defineEventHandler(async (event) => {
   const fields = [];
   const params = [];
   let pi = 1;
+  if (body.username !== void 0) {
+    const username = body.username.trim();
+    if (username.length < 3 || username.length > 50) {
+      throw createError({ statusCode: 400, message: "\u041D\u0438\u043A \u0434\u043E\u043B\u0436\u0435\u043D \u0431\u044B\u0442\u044C \u043E\u0442 3 \u0434\u043E 50 \u0441\u0438\u043C\u0432\u043E\u043B\u043E\u0432" });
+    }
+    const taken = await queryOne(
+      "SELECT id FROM users WHERE LOWER(username) = LOWER($1) AND id <> $2",
+      [username, userId]
+    );
+    if (taken) {
+      throw createError({ statusCode: 409, message: "\u042D\u0442\u043E\u0442 \u043D\u0438\u043A \u0443\u0436\u0435 \u0437\u0430\u043D\u044F\u0442" });
+    }
+    fields.push(`username = $${pi}`);
+    params.push(username);
+    pi++;
+  }
   if (body.bio !== void 0) {
     fields.push(`bio = $${pi}`);
     params.push(body.bio);
@@ -4289,7 +4364,7 @@ const me_patch = defineEventHandler(async (event) => {
     username: updated.username,
     bio: updated.bio,
     location: updated.location,
-    avatarUrl: (_a = updated.avatar_url) != null ? _a : "/images/avatars/default_avatar.svg"
+    avatar_url: (_a = updated.avatar_url) != null ? _a : "/images/avatars/default_avatar.svg"
   };
 });
 

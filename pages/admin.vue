@@ -87,16 +87,18 @@
               <td class="muted">{{ new Date(u.createdAt).toLocaleDateString('ru-RU') }}</td>
               <td>
                 <div v-if="!isProtected(u)" class="row-act">
-                  <span class="ract" title="Сменить роль" @click="toggleRole(u)"><i class="ti ti-shield" /></span>
-                  <span
-                    v-if="!u.isBanned" class="ract ract-d" title="Забанить"
-                    @click="openBan(u)"
-                  ><i class="ti ti-ban" /></span>
-                  <span
-                    v-else class="ract ract-ok" title="Разбанить"
-                    @click="unbanUser(u)"
-                  ><i class="ti ti-lock-open" /></span>
-                  <span class="ract ract-d" title="Удалить" @click="deleteUser(u.id)"><i class="ti ti-trash" /></span>
+                  <button class="uact" title="Сменить роль" @click="toggleRole(u)">
+                    <i class="ti ti-shield" /> {{ u.role === 'admin' ? 'Снять админа' : 'Сделать админом' }}
+                  </button>
+                  <button v-if="!u.isBanned" class="uact uact-warn" title="Забанить" @click="openBan(u)">
+                    <i class="ti ti-ban" /> Забанить
+                  </button>
+                  <button v-else class="uact uact-ok" title="Разбанить" @click="unbanUser(u)">
+                    <i class="ti ti-lock-open" /> Разбанить
+                  </button>
+                  <button class="uact uact-danger" title="Удалить" @click="deleteUser(u.id)">
+                    <i class="ti ti-trash" /> Удалить
+                  </button>
                 </div>
                 <span v-else class="muted" style="font-size:11px">защищён</span>
               </td>
@@ -290,13 +292,34 @@ async function unbanUser(u: any) {
 .uname    { font-weight: 700; color: $ink; }
 .uemail   { font-size: 10.5px; color: $ink-3; font-weight: 600; }
 
-.row-act { @include flex-row(4px); }
+.row-act { @include flex-row(4px); flex-wrap: wrap; }
 .ract {
   font-size: 15px; color: $ink-3; cursor: pointer;
   padding: 4px; border-radius: 6px; transition: .14s;
   &:hover       { background: $bg-inset; color: $ink; }
   &-d:hover     { color: $danger; background: $danger-tint; }
   &-ok:hover    { color: $success; background: $success-tint; }
+}
+
+// Кнопки управления пользователем — с подписями, чтобы их нельзя было не заметить
+.uact {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: $font-body; font-size: 11.5px; font-weight: 700;
+  padding: 5px 9px; border-radius: $r-sm;
+  border: 1px solid $line-2; background: $bg-card; color: $ink-2;
+  cursor: pointer; transition: .14s; white-space: nowrap;
+  i { font-size: 14px; }
+
+  &:hover { border-color: $brand-line; color: $brand-deep; background: $brand-tint; }
+
+  &-warn { color: $danger; }
+  &-warn:hover { color: $danger; border-color: $danger; background: $danger-tint; }
+
+  &-ok { color: $success; }
+  &-ok:hover { color: $success; border-color: $success; background: $success-tint; }
+
+  &-danger { color: $danger; }
+  &-danger:hover { color: #fff; border-color: $danger; background: $danger; }
 }
 
 // — Статус / роль —

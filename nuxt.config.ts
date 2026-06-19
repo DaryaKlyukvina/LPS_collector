@@ -8,6 +8,19 @@ export default defineNuxtConfig({
 
   css: ['~/assets/scss/main.scss'],
 
+  app: {
+    head: {
+      link: [
+        // Иконочный шрифт Tabler — используется во всём интерфейсе (классы `ti ti-*`).
+        // Версия 2.47.0 поддерживает и обычные, и -filled иконки (ti-paw-filled и т.п.).
+        {
+          rel: 'stylesheet',
+          href: 'https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css',
+        },
+      ],
+    },
+  },
+
   vite: {
     css: {
       preprocessorOptions: {
