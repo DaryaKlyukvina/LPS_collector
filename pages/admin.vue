@@ -25,8 +25,11 @@
           <div v-for="s in stats" :key="s.label" class="sc">
             <div class="sc-l">{{ s.label }}</div>
             <div class="sc-n">{{ s.value }}</div>
-            <div class="sc-d" :class="s.trend > 0 ? 'up' : 'dn'">
-              <i :class="`ti ti-arrow-${s.trend > 0 ? 'up' : 'down'}`" /> {{ s.sub }}
+            <div class="sc-d" :class="s.trend > 0 ? 'up' : (s.trend < 0 ? 'dn' : 'neutral')">
+              <i v-if="s.trend > 0" class="ti ti-arrow-up" />
+              <i v-else-if="s.trend < 0" class="ti ti-arrow-down" />
+              <i v-else class="ti ti-minus" />
+              {{ s.sub }}
             </div>
           </div>
         </div>
@@ -36,7 +39,7 @@
       <template v-if="section === 'pets'">
         <div class="section-t">
           Фигурки
-          <button class="btn btn-primary btn-sm"><i class="ti ti-plus" /> Добавить</button>
+          <button class="btn btn-primary btn-sm" @click="openCreatePet"><i class="ti ti-plus" /> Добавить</button>
         </div>
         <table class="tbl">
           <thead><tr><th>Фигурка</th><th>Поколение</th><th>Молд</th><th>Редкость</th><th></th></tr></thead>
@@ -51,8 +54,8 @@
               <td><span v-if="pet.releaseType" class="rar" :class="`rar-${pet.releaseType.slug}`">{{ pet.releaseType.label }}</span><span v-else class="rar">—</span></td>
               <td>
                 <div class="row-act">
-                  <span class="ract"><i class="ti ti-edit" /></span>
-                  <span class="ract ract-d" @click="deletePet(pet.id)"><i class="ti ti-trash" /></span>
+                  <span class="ract" title="Редактировать" @click="openEditPet(pet)"><i class="ti ti-edit" /></span>
+                  <span class="ract ract-d" title="Удалить" @click="deletePet(pet.id)"><i class="ti ti-trash" /></span>
                 </div>
               </td>
             </tr>
@@ -109,6 +112,87 @@
 
     </main>
 
+    <!-- Модалка фигурки (создание / редактирование) -->
+    <div class="modal-overlay" :class="{ open: petModal.open }" @click.self="petModal.open = false">
+      <div class="modal" style="max-width:560px">
+        <div class="modal-head">
+          <div class="mh-ic"><i class="ti ti-heart" /></div>
+          <div class="mh-tt">
+            <div class="modal-title">{{ petModal.id ? 'Редактировать фигурку' : 'Новая фигурка' }}</div>
+          </div>
+          <button class="modal-close" @click="petModal.open = false"><i class="ti ti-x" /></button>
+        </div>
+        <div class="modal-body">
+          <div class="form-row2">
+            <div class="edit-field">
+              <label>Номер <span class="req">*</span></label>
+              <input v-model.number="petForm.number" type="number" min="1" :disabled="!!petModal.id" placeholder="3847">
+            </div>
+            <div class="edit-field">
+              <label>Название <span class="req">*</span></label>
+              <input v-model="petForm.name" type="text" placeholder="Имя фигурки">
+            </div>
+          </div>
+
+          <div class="form-row2">
+            <div class="edit-field">
+              <label>Молд <span class="req">*</span></label>
+              <select v-model="petForm.moldId">
+                <option value="" disabled>— выберите —</option>
+                <option v-for="m in meta?.molds" :key="m.id" :value="m.id">{{ m.name }} · {{ m.species }}</option>
+              </select>
+            </div>
+            <div class="edit-field">
+              <label>Поколение <span class="req">*</span></label>
+              <select v-model="petForm.generationId">
+                <option value="" disabled>— выберите —</option>
+                <option v-for="g in meta?.generations" :key="g.id" :value="g.id">{{ g.label }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="edit-field">
+            <label>Тип релиза (редкость)</label>
+            <select v-model="petForm.releaseTypeId">
+              <option value="">— не указано —</option>
+              <option v-for="rt in meta?.releaseTypes" :key="rt.id" :value="rt.id">{{ rt.label }}</option>
+            </select>
+          </div>
+
+          <div class="edit-field">
+            <label>Ссылка на изображение</label>
+            <input v-model="petForm.imageUrl" type="text" placeholder="https://example.com/figurine.png">
+          </div>
+          <div v-if="petForm.imageUrl" class="img-preview">
+            <img :src="petForm.imageUrl" alt="превью" @error="imgError = true" @load="imgError = false">
+            <span v-if="imgError" class="img-err"><i class="ti ti-alert-triangle" /> Не удалось загрузить изображение по ссылке</span>
+          </div>
+
+          <div class="edit-field">
+            <label>Расцветка</label>
+            <input v-model="petForm.colorScheme" type="text" placeholder="Напр.: розовый с блёстками">
+          </div>
+
+          <div class="edit-field">
+            <label>Описание</label>
+            <textarea v-model="petForm.description" rows="3" placeholder="Описание фигурки..."></textarea>
+          </div>
+
+          <div class="feat-row">
+            <label class="feat"><input v-model="petForm.hasFlocking" type="checkbox"> Флокинг</label>
+            <label class="feat"><input v-model="petForm.hasMagnet" type="checkbox"> Магнит</label>
+            <label class="feat"><input v-model="petForm.hasGlitter" type="checkbox"> Блёстки</label>
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button class="btn btn-ghost" @click="petModal.open = false">Отмена</button>
+          <button class="btn btn-primary" style="margin-left:auto" :disabled="savingPet" @click="savePet">
+            <i class="ti ti-check" /> {{ savingPet ? 'Сохраняем...' : (petModal.id ? 'Сохранить' : 'Добавить') }}
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Модалка бана -->
     <div class="modal-overlay" :class="{ open: banModal.open }" @click.self="banModal.open = false">
       <div class="modal" style="max-width:420px">
@@ -154,20 +238,144 @@ const menuItems = [
   { key: 'moderation', icon: 'ti-shield',    label: 'Модерация' },
 ]
 
-const stats = [
-  { label: 'Фигурок в базе',       value: '3 214', trend: 1, sub: '+12 за неделю' },
-  { label: 'Пользователей',        value: '847',   trend: 1, sub: '+23 за неделю' },
-  { label: 'Успешных обменов', value: '402',    trend: 1, sub: '+30 за неделю' },
-  { label: 'На модерации',         value: '4',     trend: -1,sub: 'Требует внимания' },
-]
+const stats = computed(() => {
+  const s = statsData.value
+  const fmt = (n: number) => (n ?? 0).toLocaleString('ru-RU')
+  return [
+    {
+      label: 'Фигурок в базе', value: fmt(s?.petsTotal ?? 0),
+      trend: (s?.petsWeek ?? 0) > 0 ? 1 : 0,
+      sub: `+${s?.petsWeek ?? 0} за неделю`,
+    },
+    {
+      label: 'Пользователей', value: fmt(s?.usersTotal ?? 0),
+      trend: (s?.usersWeek ?? 0) > 0 ? 1 : 0,
+      sub: `+${s?.usersWeek ?? 0} за неделю`,
+    },
+    {
+      label: 'Успешных обменов', value: fmt(s?.tradesDone ?? 0),
+      trend: (s?.tradesDoneWeek ?? 0) > 0 ? 1 : 0,
+      sub: `+${s?.tradesDoneWeek ?? 0} за неделю`,
+    },
+    {
+      label: 'Ожидают обмена', value: fmt(s?.tradesPending ?? 0),
+      trend: (s?.tradesPending ?? 0) > 0 ? -1 : 0,
+      sub: (s?.tradesPending ?? 0) > 0 ? 'Ожидают ответа' : 'Нет ожидающих',
+    },
+  ]
+})
 
+const { data: statsData, refresh: refreshStats } = await useFetch('/api/admin/stats')
+const { data: meta } = await useFetch('/api/meta')
 const { data: petsData, refresh: refreshPets } = await useFetch('/api/pets', { query: { limit: 20 } })
 const { data: usersData, refresh: refreshUsers } = await useFetch('/api/users')
 
 async function deletePet(id: string) {
   if (!confirm('Удалить фигурку?')) return
-  await $fetch(`/api/pets/${id}`, { method: 'DELETE' })
-  refreshPets()
+  try {
+    await $fetch(`/api/pets/${id}`, { method: 'DELETE' })
+    refreshPets()
+    refreshStats()
+  } catch (e: any) {
+    alert(e?.data?.message ?? 'Не удалось удалить фигурку')
+  }
+}
+
+// ── Создание / редактирование фигурки ────────────────────────
+const petModal = reactive({ open: false, id: null as string | null })
+const savingPet = ref(false)
+const imgError = ref(false)
+const petForm = reactive({
+  number: null as number | null,
+  name: '',
+  moldId: '',
+  generationId: '',
+  releaseTypeId: '',
+  colorScheme: '',
+  imageUrl: '',
+  description: '',
+  hasFlocking: false,
+  hasMagnet: false,
+  hasGlitter: false,
+})
+
+function resetPetForm() {
+  petForm.number = null
+  petForm.name = ''
+  petForm.moldId = ''
+  petForm.generationId = ''
+  petForm.releaseTypeId = ''
+  petForm.colorScheme = ''
+  petForm.imageUrl = ''
+  petForm.description = ''
+  petForm.hasFlocking = false
+  petForm.hasMagnet = false
+  petForm.hasGlitter = false
+  imgError.value = false
+}
+
+function openCreatePet() {
+  petModal.id = null
+  resetPetForm()
+  petModal.open = true
+}
+
+async function openEditPet(pet: any) {
+  resetPetForm()
+  petModal.id = pet.id
+  try {
+    // Полные данные (включая расцветку и описание, которых нет в списке)
+    const full = await $fetch<any>(`/api/pets/${pet.id}`)
+    petForm.number        = full.number
+    petForm.name          = full.name ?? ''
+    petForm.moldId        = full.mold?.id ?? ''
+    petForm.generationId  = full.generation?.id ?? ''
+    petForm.releaseTypeId = full.releaseType?.id ?? ''
+    petForm.colorScheme   = full.colorScheme ?? ''
+    petForm.imageUrl      = full.imageUrl ?? ''
+    petForm.description   = full.description ?? ''
+    petForm.hasFlocking   = !!full.hasFlocking
+    petForm.hasMagnet     = !!full.hasMagnet
+    petForm.hasGlitter    = !!full.hasGlitter
+    petModal.open = true
+  } catch (e: any) {
+    alert(e?.data?.message ?? 'Не удалось загрузить данные фигурки')
+  }
+}
+
+async function savePet() {
+  if (!petForm.number || !petForm.name.trim() || !petForm.moldId || !petForm.generationId) {
+    alert('Заполните номер, название, молд и поколение')
+    return
+  }
+  savingPet.value = true
+  const payload = {
+    number:        petForm.number,
+    name:          petForm.name.trim(),
+    moldId:        petForm.moldId,
+    generationId:  petForm.generationId,
+    releaseTypeId: petForm.releaseTypeId || null,
+    colorScheme:   petForm.colorScheme.trim() || null,
+    imageUrl:      petForm.imageUrl.trim() || null,
+    description:   petForm.description.trim() || null,
+    hasFlocking:   petForm.hasFlocking,
+    hasMagnet:     petForm.hasMagnet,
+    hasGlitter:    petForm.hasGlitter,
+  }
+  try {
+    if (petModal.id) {
+      await $fetch(`/api/pets/${petModal.id}`, { method: 'PATCH', body: payload })
+    } else {
+      await $fetch('/api/pets', { method: 'POST', body: payload })
+    }
+    petModal.open = false
+    refreshPets()
+    refreshStats()
+  } catch (e: any) {
+    alert(e?.data?.message ?? 'Не удалось сохранить фигурку')
+  } finally {
+    savingPet.value = false
+  }
 }
 
 async function deleteUser(id: string) {
@@ -280,6 +488,7 @@ async function unbanUser(u: any) {
   &-d { font-size: 10.5px; margin-top: 5px; font-weight: 700; @include flex-row(3px); }
   &-d.up { color: $success; }
   &-d.dn { color: $danger; }
+  &-d.neutral { color: $ink-3; }
 }
 
 .section-t {
@@ -346,8 +555,32 @@ async function unbanUser(u: any) {
 .edit-field {
   margin-bottom: 14px;
   label { display: block; font-size: 12px; color: $ink-2; margin-bottom: 6px; font-weight: 700; }
-  input, textarea { @include input-base; }
+  input, textarea, select { @include input-base; }
   textarea { resize: vertical; }
+  select { cursor: pointer; }
+  .req { color: $danger; }
+}
+
+// — Форма фигурки —
+.form-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-row2 .edit-field { margin-bottom: 14px; }
+
+.feat-row { display: flex; gap: 18px; margin-top: 2px; flex-wrap: wrap; }
+.feat {
+  @include flex-row(7px);
+  font-size: 13px; font-weight: 700; color: $ink-2; cursor: pointer;
+  input { width: 16px; height: 16px; accent-color: $brand; }
+}
+
+.img-preview {
+  margin: -4px 0 14px;
+  display: flex; flex-direction: column; gap: 6px;
+  img {
+    max-height: 120px; max-width: 100%; width: auto;
+    border-radius: $r-sm; border: 1px solid $line;
+    object-fit: contain; background: $bg-sunken; padding: 4px;
+  }
+  .img-err { font-size: 11.5px; font-weight: 700; color: $danger; @include flex-row(4px); }
 }
 .modal-overlay {
   position: fixed; inset: 0; background: rgba(36,31,24,.42); backdrop-filter: blur(2px);

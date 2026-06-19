@@ -592,6 +592,7 @@ function formatTime(iso?: string) {
   max-width: 74%; padding: 10px 14px; border-radius: $r-lg;
   font-size: 13.5px; line-height: 1.45; position: relative;
   box-shadow: $sh-sm; word-wrap: break-word;
+  flex-shrink: 0; // не сжиматься по вертикали внутри прокручиваемой ленты
 
   .t { display: block; font-size: 10px; font-weight: 600; margin-top: 5px; opacity: .6; text-align: right; }
 
@@ -666,6 +667,7 @@ function formatTime(iso?: string) {
   max-width: 340px;
   min-width: 260px;
   align-self: flex-end;
+  flex-shrink: 0; // карточка обмена не должна сжиматься и обрезаться по высоте
   background: $bg-card; border: 1px solid $brand-line;
   border-radius: $r-lg; overflow: hidden; box-shadow: $sh-md;
   &.in { align-self: flex-start; }

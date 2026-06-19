@@ -2165,7 +2165,22 @@ _gZOTwdHeHYRTr63FrCIZuXHqHoL0kqT_lwg8kFYE,
 _wH6JrtIxmaSoA8lCPWFnE9z4lQeXW6H5z3l5aymEQw
 ];
 
-const assets = {};
+const assets = {
+  "/index.mjs.map": {
+    "type": "application/json",
+    "etag": "\"9e1b3-pBsx+8aUnF6cMNH6hYOOWNXjxIg\"",
+    "mtime": "2026-06-19T08:03:26.871Z",
+    "size": 647603,
+    "path": "index.mjs.map"
+  },
+  "/index.mjs": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": "\"2941a-qQevr3iJv8PxQ80UovGieruowzs\"",
+    "mtime": "2026-06-19T08:03:26.871Z",
+    "size": 168986,
+    "path": "index.mjs"
+  }
+};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -2696,6 +2711,7 @@ async function getIslandContext(event) {
 	};
 }
 
+const _lazy_DMmIaC = () => Promise.resolve().then(function () { return stats_get$1; });
 const _lazy_VbPFdw = () => Promise.resolve().then(function () { return login_post$1; });
 const _lazy_A_qYNO = () => Promise.resolve().then(function () { return logout_post$1; });
 const _lazy_6fQCHO = () => Promise.resolve().then(function () { return me_get$1; });
@@ -2707,6 +2723,7 @@ const _lazy_TlJ97u = () => Promise.resolve().then(function () { return _id__dele
 const _lazy_hPsNVa = () => Promise.resolve().then(function () { return _id__patch$7; });
 const _lazy_a9qNbl = () => Promise.resolve().then(function () { return index_get$7; });
 const _lazy_fiaB7e = () => Promise.resolve().then(function () { return index_post$9; });
+const _lazy_KgWRvj = () => Promise.resolve().then(function () { return meta_get$1; });
 const _lazy_oib8Al = () => Promise.resolve().then(function () { return _id__delete$7; });
 const _lazy_EoBLEE = () => Promise.resolve().then(function () { return index_post$7; });
 const _lazy_P8fAj5 = () => Promise.resolve().then(function () { return _id__delete$5; });
@@ -2731,6 +2748,7 @@ const _lazy_NmGB8a = () => Promise.resolve().then(function () { return renderer;
 
 const handlers = [
   { route: '', handler: _WNW4Ve, lazy: false, middleware: true, method: undefined },
+  { route: '/api/admin/stats', handler: _lazy_DMmIaC, lazy: true, middleware: false, method: "get" },
   { route: '/api/auth/login', handler: _lazy_VbPFdw, lazy: true, middleware: false, method: "post" },
   { route: '/api/auth/logout', handler: _lazy_A_qYNO, lazy: true, middleware: false, method: "post" },
   { route: '/api/auth/me', handler: _lazy_6fQCHO, lazy: true, middleware: false, method: "get" },
@@ -2742,6 +2760,7 @@ const handlers = [
   { route: '/api/collection/:id', handler: _lazy_hPsNVa, lazy: true, middleware: false, method: "patch" },
   { route: '/api/collection', handler: _lazy_a9qNbl, lazy: true, middleware: false, method: "get" },
   { route: '/api/collection', handler: _lazy_fiaB7e, lazy: true, middleware: false, method: "post" },
+  { route: '/api/meta', handler: _lazy_KgWRvj, lazy: true, middleware: false, method: "get" },
   { route: '/api/pet-images/:id', handler: _lazy_oib8Al, lazy: true, middleware: false, method: "delete" },
   { route: '/api/pet-images', handler: _lazy_EoBLEE, lazy: true, middleware: false, method: "post" },
   { route: '/api/pets/:id', handler: _lazy_P8fAj5, lazy: true, middleware: false, method: "delete" },
@@ -3206,6 +3225,36 @@ function requireRole(event, ...roles) {
   return payload;
 }
 
+const stats_get = defineEventHandler(async (event) => {
+  var _a, _b, _c, _d, _e, _f, _g;
+  requireRole(event, "admin");
+  const row = await queryOne(`
+    SELECT
+      (SELECT COUNT(*) FROM pets)  AS pets_total,
+      (SELECT COUNT(*) FROM pets  WHERE created_at >= now() - interval '7 days') AS pets_week,
+      (SELECT COUNT(*) FROM users) AS users_total,
+      (SELECT COUNT(*) FROM users WHERE created_at >= now() - interval '7 days') AS users_week,
+      (SELECT COUNT(*) FROM trade_offers WHERE status = 'accepted') AS trades_done,
+      (SELECT COUNT(*) FROM trade_offers WHERE status = 'accepted'
+              AND created_at >= now() - interval '7 days') AS trades_done_week,
+      (SELECT COUNT(*) FROM trade_offers WHERE status = 'pending') AS trades_pending
+  `);
+  return {
+    petsTotal: Number((_a = row == null ? void 0 : row.pets_total) != null ? _a : 0),
+    petsWeek: Number((_b = row == null ? void 0 : row.pets_week) != null ? _b : 0),
+    usersTotal: Number((_c = row == null ? void 0 : row.users_total) != null ? _c : 0),
+    usersWeek: Number((_d = row == null ? void 0 : row.users_week) != null ? _d : 0),
+    tradesDone: Number((_e = row == null ? void 0 : row.trades_done) != null ? _e : 0),
+    tradesDoneWeek: Number((_f = row == null ? void 0 : row.trades_done_week) != null ? _f : 0),
+    tradesPending: Number((_g = row == null ? void 0 : row.trades_pending) != null ? _g : 0)
+  };
+});
+
+const stats_get$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: stats_get
+}, Symbol.toStringTag, { value: 'Module' }));
+
 const login_post = defineEventHandler(async (event) => {
   const body = await readBody(event);
   if (!(body == null ? void 0 : body.email) || !(body == null ? void 0 : body.password)) {
@@ -3650,6 +3699,30 @@ const index_post$9 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProper
   default: index_post$8
 }, Symbol.toStringTag, { value: 'Module' }));
 
+const meta_get = defineEventHandler(async () => {
+  const [generations, molds, releaseTypes] = await Promise.all([
+    query(
+      "SELECT id, number, label FROM generations ORDER BY number"
+    ),
+    query(
+      "SELECT id, name, species FROM molds ORDER BY name"
+    ),
+    query(
+      "SELECT id, slug, label, is_exclusive FROM release_types ORDER BY sort_order"
+    )
+  ]);
+  return {
+    generations: generations.map((g) => ({ id: g.id, number: g.number, label: g.label })),
+    molds: molds.map((m) => ({ id: m.id, name: m.name, species: m.species })),
+    releaseTypes: releaseTypes.map((r) => ({ id: r.id, slug: r.slug, label: r.label, isExclusive: r.is_exclusive }))
+  };
+});
+
+const meta_get$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: meta_get
+}, Symbol.toStringTag, { value: 'Module' }));
+
 const _id__delete$6 = defineEventHandler(async (event) => {
   var _a;
   requireRole(event, "admin");
@@ -3959,29 +4032,42 @@ const index_post$4 = defineEventHandler(async (event) => {
   const body = await readBody(event);
   const required = ["number", "name", "moldId", "generationId"];
   for (const field of required) {
-    if (!(body == null ? void 0 : body[field])) throw createError({ statusCode: 400, message: `\u041F\u043E\u043B\u0435 ${field} \u043E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u043D\u043E` });
+    if ((body == null ? void 0 : body[field]) === void 0 || (body == null ? void 0 : body[field]) === null || (body == null ? void 0 : body[field]) === "") {
+      throw createError({ statusCode: 400, message: `\u041F\u043E\u043B\u0435 ${field} \u043E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u043D\u043E` });
+    }
   }
-  const rows = await query(
-    `INSERT INTO pets (number, name, mold_id, generation_id, release_type_id,
-       has_flocking, has_magnet, has_glitter, color_scheme, image_url, description, created_by)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
-     RETURNING id`,
-    [
-      body.number,
-      body.name,
-      body.moldId,
-      body.generationId,
-      (_a = body.releaseTypeId) != null ? _a : null,
-      (_b = body.hasFlocking) != null ? _b : false,
-      (_c = body.hasMagnet) != null ? _c : false,
-      (_d = body.hasGlitter) != null ? _d : false,
-      (_e = body.colorScheme) != null ? _e : null,
-      (_f = body.imageUrl) != null ? _f : null,
-      (_g = body.description) != null ? _g : null,
-      payload.sub
-    ]
-  );
-  return { id: rows[0].id };
+  const number = Number(body.number);
+  if (!Number.isInteger(number) || number <= 0) {
+    throw createError({ statusCode: 400, message: "\u041D\u043E\u043C\u0435\u0440 \u0434\u043E\u043B\u0436\u0435\u043D \u0431\u044B\u0442\u044C \u043F\u043E\u043B\u043E\u0436\u0438\u0442\u0435\u043B\u044C\u043D\u044B\u043C \u0446\u0435\u043B\u044B\u043C \u0447\u0438\u0441\u043B\u043E\u043C" });
+  }
+  try {
+    const rows = await query(
+      `INSERT INTO pets (number, name, mold_id, generation_id, release_type_id,
+         has_flocking, has_magnet, has_glitter, color_scheme, image_url, description, created_by)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
+       RETURNING id`,
+      [
+        number,
+        body.name,
+        body.moldId,
+        body.generationId,
+        (_a = body.releaseTypeId) != null ? _a : null,
+        (_b = body.hasFlocking) != null ? _b : false,
+        (_c = body.hasMagnet) != null ? _c : false,
+        (_d = body.hasGlitter) != null ? _d : false,
+        (_e = body.colorScheme) != null ? _e : null,
+        (_f = body.imageUrl) != null ? _f : null,
+        (_g = body.description) != null ? _g : null,
+        payload.sub
+      ]
+    );
+    return { id: rows[0].id };
+  } catch (e) {
+    if ((e == null ? void 0 : e.code) === "23505") {
+      throw createError({ statusCode: 409, message: `\u0424\u0438\u0433\u0443\u0440\u043A\u0430 \u0441 \u043D\u043E\u043C\u0435\u0440\u043E\u043C #${number} \u0443\u0436\u0435 \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u0443\u0435\u0442` });
+    }
+    throw e;
+  }
 });
 
 const index_post$5 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
