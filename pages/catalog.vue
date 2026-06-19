@@ -134,8 +134,16 @@ const { data } = await useFetch('/api/pets', {
     hasGlitter: filters.hasGlitter || undefined,
     sort: filters.sort,
     page: filters.page,
+    limit: 12,
   })),
 })
+
+// При смене любого фильтра/поиска/сортировки — возвращаемся на первую страницу,
+// чтобы не оказаться на несуществующей странице
+watch(
+  () => [filters.search, filters.releaseTypeSlugs.join(','), filters.hasFlocking, filters.hasMagnet, filters.hasGlitter, filters.sort],
+  () => { filters.page = 1 },
+)
 
 const visiblePages = computed(() => {
   const total = data.value?.totalPages ?? 1

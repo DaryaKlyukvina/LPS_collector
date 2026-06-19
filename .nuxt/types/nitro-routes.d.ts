@@ -41,6 +41,9 @@ declare module "nitropack/types" {
       'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/pets/[id].get').default>>>>
       'patch': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/pets/[id].patch').default>>>>
     }
+    '/api/pets/:id/owners': {
+      'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/pets/[id]/owners.get').default>>>>
+    }
     '/api/pets': {
       'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/pets/index.get').default>>>>
       'post': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/pets/index.post').default>>>>
@@ -55,6 +58,9 @@ declare module "nitropack/types" {
       'delete': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/users/[id].delete').default>>>>
       'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/users/[id].get').default>>>>
       'patch': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/users/[id].patch').default>>>>
+    }
+    '/api/users/:id/ban': {
+      'patch': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/users/[id]/ban.patch').default>>>>
     }
     '/api/users/:id/collection': {
       'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/users/[id]/collection.get').default>>>>

@@ -64,23 +64,41 @@
       <template v-if="section === 'users'">
         <div class="section-t">Пользователи</div>
         <table class="tbl">
-          <thead><tr><th>Пользователь</th><th>Роль</th><th>Коллекция</th><th>Дата</th><th></th></tr></thead>
+          <thead><tr><th>Пользователь</th><th>Роль</th><th>Статус</th><th>Коллекция</th><th>Дата</th><th></th></tr></thead>
           <tbody>
             <tr v-for="u in usersData" :key="u.id">
               <td>
-                <div class="uname">@{{ u.username }}</div>
+                <div class="uname">
+                  @{{ u.username }}
+                  <span v-if="isProtected(u)" class="owner-badge" title="Главный администратор"><i class="ti ti-crown" /></span>
+                </div>
                 <div class="uemail">{{ u.email }}</div>
               </td>
               <td>
                 <span class="role-pill" :class="`r-${u.role}`">{{ u.role }}</span>
               </td>
+              <td>
+                <span v-if="u.isBanned" class="ban-pill" :title="u.banReason || 'Без причины'">
+                  <i class="ti ti-ban" /> Бан
+                </span>
+                <span v-else class="ok-pill">Активен</span>
+              </td>
               <td>{{ u.collectionCount }} фиг.</td>
               <td class="muted">{{ new Date(u.createdAt).toLocaleDateString('ru-RU') }}</td>
               <td>
-                <div class="row-act">
+                <div v-if="!isProtected(u)" class="row-act">
                   <span class="ract" title="Сменить роль" @click="toggleRole(u)"><i class="ti ti-shield" /></span>
-                  <span class="ract ract-d" @click="deleteUser(u.id)"><i class="ti ti-trash" /></span>
+                  <span
+                    v-if="!u.isBanned" class="ract ract-d" title="Забанить"
+                    @click="openBan(u)"
+                  ><i class="ti ti-ban" /></span>
+                  <span
+                    v-else class="ract ract-ok" title="Разбанить"
+                    @click="unbanUser(u)"
+                  ><i class="ti ti-lock-open" /></span>
+                  <span class="ract ract-d" title="Удалить" @click="deleteUser(u.id)"><i class="ti ti-trash" /></span>
                 </div>
+                <span v-else class="muted" style="font-size:11px">защищён</span>
               </td>
             </tr>
           </tbody>
@@ -88,10 +106,40 @@
       </template>
 
     </main>
+
+    <!-- Модалка бана -->
+    <div class="modal-overlay" :class="{ open: banModal.open }" @click.self="banModal.open = false">
+      <div class="modal" style="max-width:420px">
+        <div class="modal-head">
+          <div class="mh-ic" style="background:#fde8e8;color:#c0392b"><i class="ti ti-ban" /></div>
+          <div class="mh-tt">
+            <div class="modal-title">Забанить пользователя</div>
+          </div>
+          <button class="modal-close" @click="banModal.open = false"><i class="ti ti-x" /></button>
+        </div>
+        <div class="modal-body">
+          <p style="font-size:13px;color:#6b6256;margin-bottom:14px">
+            Пользователь <b>@{{ banModal.username }}</b> не сможет войти в аккаунт, пока бан не будет снят.
+          </p>
+          <div class="edit-field">
+            <label>Причина бана <span style="color:#c0392b">*</span></label>
+            <textarea v-model="banModal.reason" rows="3" placeholder="Например: спам, оскорбления, мошенничество с обменами..."></textarea>
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button class="btn btn-ghost" @click="banModal.open = false">Отмена</button>
+          <button class="btn btn-primary" style="margin-left:auto;background:#c0392b;border-color:#c0392b" @click="confirmBan">
+            <i class="ti ti-ban" /> Забанить
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { PROTECTED_ADMIN_USERNAME } from '~/types'
+
 definePageMeta({ middleware: 'admin' })
 
 const auth = useAuthStore()
@@ -122,14 +170,62 @@ async function deletePet(id: string) {
 
 async function deleteUser(id: string) {
   if (!confirm('Удалить пользователя?')) return
-  await $fetch(`/api/users/${id}`, { method: 'DELETE' })
-  refreshUsers()
+  try {
+    await $fetch(`/api/users/${id}`, { method: 'DELETE' })
+    refreshUsers()
+  } catch (e: any) {
+    alert(e?.data?.message ?? 'Не удалось удалить пользователя')
+  }
 }
 
 async function toggleRole(u: any) {
   const newRole = u.role === 'admin' ? 'user' : 'admin'
-  await $fetch(`/api/users/${u.id}`, { method: 'PATCH', body: { role: newRole } })
-  refreshUsers()
+  try {
+    await $fetch(`/api/users/${u.id}`, { method: 'PATCH', body: { role: newRole } })
+    refreshUsers()
+  } catch (e: any) {
+    alert(e?.data?.message ?? 'Не удалось сменить роль')
+  }
+}
+
+// Главного администратора нельзя трогать
+function isProtected(u: any) {
+  return u.username === PROTECTED_ADMIN_USERNAME
+}
+
+// — Бан / разбан —
+const banModal = reactive({ open: false, userId: '', username: '', reason: '' })
+
+function openBan(u: any) {
+  banModal.userId = u.id
+  banModal.username = u.username
+  banModal.reason = ''
+  banModal.open = true
+}
+
+async function confirmBan() {
+  const reason = banModal.reason.trim()
+  if (!reason) { alert('Укажите причину бана'); return }
+  try {
+    await $fetch(`/api/users/${banModal.userId}/ban`, {
+      method: 'PATCH',
+      body: { banned: true, reason },
+    })
+    banModal.open = false
+    refreshUsers()
+  } catch (e: any) {
+    alert(e?.data?.message ?? 'Не удалось забанить пользователя')
+  }
+}
+
+async function unbanUser(u: any) {
+  if (!confirm(`Снять бан с @${u.username}?`)) return
+  try {
+    await $fetch(`/api/users/${u.id}/ban`, { method: 'PATCH', body: { banned: false } })
+    refreshUsers()
+  } catch (e: any) {
+    alert(e?.data?.message ?? 'Не удалось снять бан')
+  }
 }
 </script>
 
@@ -202,4 +298,49 @@ async function toggleRole(u: any) {
   &-d:hover     { color: $danger; background: $danger-tint; }
   &-ok:hover    { color: $success; background: $success-tint; }
 }
+
+// — Статус / роль —
+.ban-pill {
+  @include flex-row(4px);
+  display: inline-flex;
+  font-size: 11px; font-weight: 700;
+  padding: 2px 8px; border-radius: $r-pill;
+  color: $danger; background: $danger-tint;
+}
+.ok-pill {
+  font-size: 11px; font-weight: 700;
+  padding: 2px 8px; border-radius: $r-pill;
+  color: $success; background: $success-tint;
+}
+.owner-badge {
+  color: #d4a017;
+  font-size: 13px;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
+// — Модалка (локальная копия, чтобы /admin был самодостаточен) —
+.edit-field {
+  margin-bottom: 14px;
+  label { display: block; font-size: 12px; color: $ink-2; margin-bottom: 6px; font-weight: 700; }
+  input, textarea { @include input-base; }
+  textarea { resize: vertical; }
+}
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(36,31,24,.42); backdrop-filter: blur(2px);
+  display: none; align-items: center; justify-content: center; z-index: 50; padding: 24px;
+  &.open { display: flex; }
+}
+.modal {
+  background: $bg-card; border-radius: $r-xl; box-shadow: $sh-lg;
+  width: 100%; max-height: 88vh; display: flex; flex-direction: column;
+  overflow: hidden; border: 1px solid $line;
+}
+.modal-head { @include flex-row(10px); padding: 16px 20px; border-bottom: 1px solid $line; }
+.mh-ic { width: 34px; height: 34px; border-radius: 10px; background: $brand-tint; color: $brand; display: grid; place-items: center; font-size: 18px; flex-shrink: 0; }
+.mh-tt { flex: 1; }
+.modal-title { @include font-display(16px, 700); color: $ink; }
+.modal-close { width: 32px; height: 32px; border-radius: $r-sm; display: grid; place-items: center; cursor: pointer; color: $ink-3; font-size: 20px; border: none; background: transparent; }
+.modal-body { padding: 16px 20px; overflow-y: auto; }
+.modal-foot { @include flex-row(10px); padding: 14px 20px; border-top: 1px solid $line; background: $bg-sunken; }
 </style>

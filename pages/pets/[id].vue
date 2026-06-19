@@ -150,6 +150,41 @@
         </NuxtLink>
       </div>
     </div>
+
+    <!-- Коллекционеры, у кого есть эта фигурка -->
+    <div class="owners-block">
+      <div class="section-head-row">
+        <span class="sec-hd">Коллекционеры с этой фигуркой</span>
+        <span v-if="owners.length" class="owners-count">{{ owners.length }}</span>
+      </div>
+
+      <div v-if="owners.length" class="owners-list">
+        <div v-for="o in owners" :key="o.id" class="owner-row">
+          <NuxtLink :to="`/users/${o.id}`" class="owner-link">
+            <img class="owner-av" :src="o.avatarUrl" :alt="o.username">
+            <div class="owner-info">
+              <div class="owner-name">@{{ o.username }}</div>
+              <div class="owner-loc">
+                <i v-if="o.location" class="ti ti-map-pin" />
+                {{ o.location ?? 'Город не указан' }}
+              </div>
+            </div>
+          </NuxtLink>
+          <NuxtLink
+            v-if="auth.isLoggedIn && auth.user?.id !== o.id"
+            :to="`/chat?with=${o.id}`"
+            class="btn btn-soft btn-sm"
+          >
+            <i class="ti ti-message" /> Написать
+          </NuxtLink>
+        </div>
+      </div>
+
+      <div v-else class="owners-empty">
+        <i class="ti ti-mood-empty" />
+        Пока ни у кого нет этой фигурки в коллекции
+      </div>
+    </div>
   </div>
 
   <!-- Состояние загрузки / ошибка -->
@@ -215,6 +250,12 @@ async function toggleWishlist() {
   }
   refreshWish()
 }
+
+// Коллекционеры, у кого есть эта фигурка
+const { data: ownersData } = await useFetch<any[]>(
+  () => `/api/pets/${route.params.id}/owners`,
+)
+const owners = computed(() => ownersData.value ?? [])
 
 // Похожие фигурки (тот же молд, другой id)
 const { data: sameMoldData } = await useFetch('/api/pets', {
@@ -319,6 +360,58 @@ useHead({ title: computed(() => pet.value ? `${pet.value.name} #${pet.value.numb
 
 .pet-desc {
   font-size: 13.5px; color: $ink-2; line-height: 1.65;
+}
+
+// Блок коллекционеров
+.owners-block {
+  border-top: 1px solid $line;
+  padding: 18px 22px;
+}
+
+.owners-count {
+  font-size: 11px; font-weight: 700; color: $brand;
+  background: $brand-tint; padding: 2px 8px; border-radius: $r-pill;
+}
+
+.section-head-row { @include flex-row(8px); margin-bottom: 14px; }
+
+.owners-list { display: flex; flex-direction: column; gap: 8px; }
+
+.owner-row {
+  @include flex-row(10px, space-between);
+  padding: 10px 12px;
+  border: 1px solid $line;
+  border-radius: $r-md;
+  background: $bg-sunken;
+}
+
+.owner-link {
+  @include flex-row(10px);
+  text-decoration: none;
+  color: inherit;
+  flex: 1;
+  min-width: 0;
+}
+
+.owner-av {
+  width: 38px; height: 38px;
+  border-radius: $r-pill;
+  object-fit: cover;
+  border: 1px solid $line;
+  flex-shrink: 0;
+}
+
+.owner-info { min-width: 0; }
+.owner-name { @include font-display(13.5px, 600); color: $ink; }
+.owner-loc  { font-size: 11.5px; color: $ink-2; font-weight: 600; @include flex-row(4px); margin-top: 1px; }
+
+.owners-empty {
+  @include flex-row(8px);
+  padding: 16px;
+  color: $ink-3;
+  font-size: 13px;
+  font-weight: 600;
+  i { font-size: 18px; }
 }
 
 // Блок похожих фигурок

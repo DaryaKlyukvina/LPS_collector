@@ -14,9 +14,15 @@ export interface User {
   bio?: string
   location?: string
   avatar_url?: string
+  is_banned?: boolean
+  ban_reason?: string | null
   created_at: string
   // НЕ хранить passwordHash на клиенте
 }
+
+// — Имя оригинального администратора, которого нельзя тронуть —
+// (нельзя менять роль, банить или удалять)
+export const PROTECTED_ADMIN_USERNAME = 'admin'
 
 // — Поколение —
 export interface Generation {

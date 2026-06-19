@@ -8,6 +8,7 @@ export default defineEventHandler(async (event) => {
   const rows = await query(
     `SELECT
        u.id, u.username, u.email, u.role, u.created_at,
+       u.is_banned, u.ban_reason,
        COUNT(ci.id) AS collection_count
      FROM users u
      LEFT JOIN collection_items ci ON ci.user_id = u.id
@@ -18,6 +19,7 @@ export default defineEventHandler(async (event) => {
   return rows.map(r => ({
     id: r.id, username: r.username, email: r.email,
     role: r.role, createdAt: r.created_at,
+    isBanned: r.is_banned, banReason: r.ban_reason,
     collectionCount: Number(r.collection_count),
   }))
 })

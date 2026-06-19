@@ -113,6 +113,10 @@
         </div>
         <div class="modal-body">
           <div class="edit-field">
+            <label>Ник</label>
+            <input v-model="editData.username" type="text" placeholder="Ваш ник" maxlength="50">
+          </div>
+          <div class="edit-field">
             <label>Город / страна</label>
             <input v-model="editData.location" type="text" placeholder="Москва, Россия">
           </div>
@@ -198,14 +202,26 @@ const favGen = computed(() => {
 })
 
 // Редактирование профиля
-const editData = reactive({ bio: user.value.bio ?? '', location: user.value.location ?? '' })
+const editData = reactive({ username: user.value.username ?? '', bio: user.value.bio ?? '', location: user.value.location ?? '' })
 watch(showEdit, (v) => {
-  if (v) { editData.bio = user.value.bio ?? ''; editData.location = user.value.location ?? '' }
+  if (v) {
+    editData.username = user.value.username ?? ''
+    editData.bio = user.value.bio ?? ''
+    editData.location = user.value.location ?? ''
+  }
 })
 
 async function saveProfile() {
-  await auth.updateProfile({ bio: editData.bio, location: editData.location })
-  showEdit.value = false
+  try {
+    await auth.updateProfile({
+      username: editData.username.trim(),
+      bio: editData.bio,
+      location: editData.location,
+    })
+    showEdit.value = false
+  } catch (e: any) {
+    alert(e?.data?.message ?? 'Не удалось сохранить профиль')
+  }
 }
 </script>
 

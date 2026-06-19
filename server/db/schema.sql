@@ -75,8 +75,14 @@ CREATE TABLE IF NOT EXISTS users (
   bio           TEXT,
   location      VARCHAR(150),
   avatar_url    TEXT,
+  is_banned     BOOLEAN NOT NULL DEFAULT FALSE,
+  ban_reason    TEXT,
   created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- Миграция для уже существующих БД: добавляем поля бана, если их ещё нет
+ALTER TABLE users ADD COLUMN IF NOT EXISTS is_banned  BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS ban_reason TEXT;
 
 -- FK добавляем после создания users
 ALTER TABLE pets

@@ -289,12 +289,54 @@ const messages = ref<any[]>([])
 async function openConv(conv: any) {
   activeId.value = conv.id
   const data = await $fetch<any>(`/api/chat/${conv.partner.id}`)
-  activeConv.value = { ...conv, partner: data.partner }
+  activeConv.value = {
+    ...conv,
+    partner: { ...data.partner, avatar_url: data.partner.avatarUrl },
+  }
   messages.value = data.messages
   await nextTick()
   scrollToBottom()
   refreshConvs()
 }
+
+// Открыть (или создать) диалог напрямую по userId собеседника —
+// используется когда переходим по ссылке вида /chat?with=USER_ID
+async function openConvByUserId(userId: string) {
+  if (!userId || userId === auth.user?.id) return
+  try {
+    const data = await $fetch<any>(`/api/chat/${userId}`)
+    activeId.value = data.conversationId
+    activeConv.value = {
+      id: data.conversationId,
+      partner: { ...data.partner, avatar_url: data.partner.avatarUrl },
+    }
+    messages.value = data.messages
+    await nextTick()
+    scrollToBottom()
+    refreshConvs()
+  } catch (e) {
+    console.error('Не удалось открыть диалог:', e)
+  }
+}
+
+// Реагируем на query-параметр ?with= — срабатывает и при первой загрузке,
+// и при переходе на /chat?with=... уже находясь на этой странице.
+// onMounted гарантирует, что код выполнится на клиенте после полной
+// инициализации auth.user (избегаем гонки с SSR).
+const route = useRoute()
+
+onMounted(() => {
+  const userId = route.query.with as string | undefined
+  if (userId) openConvByUserId(userId)
+})
+
+watch(
+  () => route.query.with as string | undefined,
+  (userId, oldUserId) => {
+    // onMounted уже обработал первое значение — реагируем только на изменения
+    if (userId && userId !== oldUserId) openConvByUserId(userId)
+  },
+)
 
 function scrollToBottom() {
   if (msgList.value) msgList.value.scrollTop = msgList.value.scrollHeight
@@ -342,9 +384,8 @@ const myCollection = computed(() => (myColData.value ?? []).map((i: any) => ({
 const partnerCollection = ref<any[]>([])
 watch(showTradeModal, async (open) => {
   if (open && activeConv.value) {
-    const data = await $fetch<any[]>(`/api/collection`, {
-      query: { userId: activeConv.value.partner.id },
-    }).catch(() => [])
+    const data = await $fetch<any[]>(`/api/users/${activeConv.value.partner.id}/collection`)
+      .catch(() => [])
     partnerCollection.value = (data ?? []).map((i: any) => ({
       ...i,
       pet: { ...i.pet, imageUrl: i.pet.imageUrl ?? '/images/placeholders/pet_thumb.svg' },
@@ -412,8 +453,13 @@ function formatTime(iso?: string) {
 .chat-layout {
   display: grid;
   grid-template-columns: 272px 1fr;
-  height: 620px;
-  min-height: 0;
+  // Высота подстраивается под окно браузера, а не фиксированные 620px —
+  // иначе при большом количестве сообщений вся страница растягивается
+  // и нижняя панель уходит за пределы экрана.
+  // 116px ≈ высота nav + footer общего layout сайта.
+  height: calc(100vh - 116px);
+  max-height: 760px;
+  min-height: 420px;
 }
 
 // ── Список диалогов ──────────────────────────────────────────
@@ -423,6 +469,7 @@ function formatTime(iso?: string) {
   flex-direction: column;
   background: $bg-sunken;
   min-width: 0;
+  min-height: 0; // позволяет .thread-list сжаться и скроллиться, а не растягивать родителя
 }
 
 .threads-head {
@@ -485,7 +532,14 @@ function formatTime(iso?: string) {
 .empty-threads { padding: 24px 12px; text-align: center; font-size: 13px; color: $ink-3; line-height: 1.55; }
 
 // ── Переписка ────────────────────────────────────────────────
-.convo { display: flex; flex-direction: column; min-width: 0; background: $bg-card; }
+.convo {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0; // критично: без этого .messages не сжимается и не скроллится,
+                 // а толкает .composer за пределы видимой области
+  background: $bg-card;
+}
 
 .convo-empty {
   flex: 1; @include flex-center(12px);
@@ -518,11 +572,20 @@ function formatTime(iso?: string) {
 
 // Лента
 .messages {
-  flex: 1; overflow-y: auto; padding: 20px 18px;
+  flex: 1;
+  min-height: 0; // вместе с min-height:0 у .convo гарантирует корректный internal scroll
+  overflow-y: auto;
+  padding: 20px 18px;
   display: flex; flex-direction: column; gap: 9px;
   background: $bg-sunken;
   background-image: $paw-tile;
-  @include no-scrollbar;
+
+  // Тонкая видимая полоса прокрутки — чтобы было ясно, что список скроллится
+  &::-webkit-scrollbar { width: 6px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: $line-2; border-radius: $r-pill; }
+  &::-webkit-scrollbar-thumb:hover { background: $ink-3; }
+  scrollbar-width: thin;
 }
 
 .msg {
@@ -599,33 +662,36 @@ function formatTime(iso?: string) {
 
 // ── Карточка обмена в сообщении ──────────────────────────────
 .msg-trade {
-  max-width: 78%; align-self: flex-end;
+  width: 100%;
+  max-width: 340px;
+  min-width: 260px;
+  align-self: flex-end;
   background: $bg-card; border: 1px solid $brand-line;
   border-radius: $r-lg; overflow: hidden; box-shadow: $sh-md;
   &.in { align-self: flex-start; }
 }
 
 .mt-head {
-  @include flex-row(8px); padding: 10px 13px;
+  @include flex-row(8px); padding: 12px 16px;
   background: $brand-tint; color: $brand-deep;
-  @include font-display(12.5px, 700); border-bottom: 1px solid $brand-line;
-  i { font-size: 16px; }
+  @include font-display(13.5px, 700); border-bottom: 1px solid $brand-line;
+  i { font-size: 18px; }
 }
 
-.mt-body   { padding: 11px 13px; }
-.mt-side   { margin-bottom: 9px; &:last-child { margin-bottom: 0; } }
-.mt-label  { @include section-head; margin-bottom: 6px; @include flex-row(5px); }
+.mt-body   { padding: 14px 16px; }
+.mt-side   { margin-bottom: 11px; &:last-child { margin-bottom: 0; } }
+.mt-label  { @include section-head; margin-bottom: 8px; @include flex-row(5px); }
 .mt-label.give { color: $danger; }
 .mt-label.want { color: $success; }
-.mt-pets   { display: flex; flex-direction: column; gap: 5px; }
-.mt-pet    { @include flex-row(9px); padding: 5px 7px; border-radius: $r-sm; background: $bg-sunken; border: 1px solid $line; }
-.mt-fig    { width: 30px; height: 30px; border-radius: 7px; flex-shrink: 0; img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; } }
-.mt-pet-name { @include font-display(12px, 600); color: $ink; }
-.mt-pet-num  { font-size: 10px; color: $ink-3; font-weight: 700; }
-.mt-swap   { @include flex-center(0); color: $ink-3; font-size: 16px; margin: 2px 0; }
-.mt-note   { font-size: 12.5px; color: $ink-2; font-weight: 500; line-height: 1.4; padding: 0 13px 10px; }
-.mt-foot   { @include flex-row(8px); padding: 10px 13px; border-top: 1px solid $line; background: $bg-sunken; }
-.mt-status { font-size: 11.5px; font-weight: 700; color: $gold-ink; @include flex-row(5px); i { font-size: 14px; } }
+.mt-pets   { display: flex; flex-direction: column; gap: 6px; }
+.mt-pet    { @include flex-row(11px); padding: 8px 10px; border-radius: $r-md; background: $bg-sunken; border: 1px solid $line; }
+.mt-fig    { width: 42px; height: 42px; border-radius: 9px; flex-shrink: 0; img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; } }
+.mt-pet-name { @include font-display(13.5px, 600); color: $ink; }
+.mt-pet-num  { font-size: 11px; color: $ink-3; font-weight: 700; }
+.mt-swap   { @include flex-center(0); color: $ink-3; font-size: 20px; margin: 4px 0; }
+.mt-note   { font-size: 13px; color: $ink-2; font-weight: 500; line-height: 1.45; padding: 0 16px 12px; }
+.mt-foot   { @include flex-row(8px); padding: 12px 16px; border-top: 1px solid $line; background: $bg-sunken; }
+.mt-status { font-size: 12px; font-weight: 700; color: $gold-ink; @include flex-row(5px); i { font-size: 15px; } }
 .mt-actions { @include flex-row(7px); margin-left: auto; }
 
 // ── Модалка обмена ───────────────────────────────────────────

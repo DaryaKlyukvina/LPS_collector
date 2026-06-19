@@ -2168,16 +2168,16 @@ _wH6JrtIxmaSoA8lCPWFnE9z4lQeXW6H5z3l5aymEQw
 const assets = {
   "/index.mjs": {
     "type": "text/javascript; charset=utf-8",
-    "etag": "\"26e43-C6AfQaolUXgCwfvn7kbbt7w+E34\"",
-    "mtime": "2026-06-19T01:09:19.586Z",
-    "size": 159299,
+    "etag": "\"271fc-UhFF+t/2LkxyJ84it1tX6rRaCk0\"",
+    "mtime": "2026-06-19T06:46:57.192Z",
+    "size": 160252,
     "path": "index.mjs"
   },
   "/index.mjs.map": {
     "type": "application/json",
-    "etag": "\"95790-Es+BLin0XZi3gdYmNHzSn8x2kSA\"",
-    "mtime": "2026-06-19T01:09:19.588Z",
-    "size": 612240,
+    "etag": "\"9621f-KLCYQQi7RZrIr0eMWSu1W9TFUlI\"",
+    "mtime": "2026-06-19T06:46:57.193Z",
+    "size": 614943,
     "path": "index.mjs.map"
   }
 };
@@ -2727,6 +2727,7 @@ const _lazy_EoBLEE = () => Promise.resolve().then(function () { return index_pos
 const _lazy_P8fAj5 = () => Promise.resolve().then(function () { return _id__delete$5; });
 const _lazy_1MEI5p = () => Promise.resolve().then(function () { return _id__get$3; });
 const _lazy_4Iq7Pn = () => Promise.resolve().then(function () { return _id__patch$5; });
+const _lazy_5G10U9 = () => Promise.resolve().then(function () { return owners_get$1; });
 const _lazy_MxHTyh = () => Promise.resolve().then(function () { return index_get$5; });
 const _lazy_7_767G = () => Promise.resolve().then(function () { return index_post$5; });
 const _lazy_hxzYUx = () => Promise.resolve().then(function () { return _id__patch$3; });
@@ -2760,6 +2761,7 @@ const handlers = [
   { route: '/api/pets/:id', handler: _lazy_P8fAj5, lazy: true, middleware: false, method: "delete" },
   { route: '/api/pets/:id', handler: _lazy_1MEI5p, lazy: true, middleware: false, method: "get" },
   { route: '/api/pets/:id', handler: _lazy_4Iq7Pn, lazy: true, middleware: false, method: "patch" },
+  { route: '/api/pets/:id/owners', handler: _lazy_5G10U9, lazy: true, middleware: false, method: "get" },
   { route: '/api/pets', handler: _lazy_MxHTyh, lazy: true, middleware: false, method: "get" },
   { route: '/api/pets', handler: _lazy_7_767G, lazy: true, middleware: false, method: "post" },
   { route: '/api/trades/:id', handler: _lazy_hxzYUx, lazy: true, middleware: false, method: "patch" },
@@ -3813,6 +3815,33 @@ const _id__patch$4 = defineEventHandler(async (event) => {
 const _id__patch$5 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: _id__patch$4
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const owners_get = defineEventHandler(async (event) => {
+  const petId = getRouterParam(event, "id");
+  const rows = await query(
+    `SELECT
+       u.id AS user_id, u.username, u.location, u.avatar_url
+     FROM collection_items ci
+     JOIN users u ON u.id = ci.user_id
+     WHERE ci.pet_id = $1
+     ORDER BY ci.added_at ASC`,
+    [petId]
+  );
+  return rows.map((r) => {
+    var _a;
+    return {
+      id: r.user_id,
+      username: r.username,
+      location: r.location,
+      avatarUrl: (_a = r.avatar_url) != null ? _a : "/images/avatars/default_avatar.svg"
+    };
+  });
+});
+
+const owners_get$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: owners_get
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const index_get$4 = defineEventHandler(async (event) => {

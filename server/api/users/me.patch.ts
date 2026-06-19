@@ -1,18 +1,35 @@
 // server/api/users/me.patch.ts
-// PATCH /api/users/me — редактировать свой профиль
+// PATCH /api/users/me — редактировать свой профиль (ник, город, описание, аватар)
 import { queryOne } from '~/server/db/client'
 import { requireAuth } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const { sub: userId } = requireAuth(event)
-  const body = await readBody<{ bio?: string; location?: string; avatarUrl?: string }>(event)
+  const body = await readBody<{ username?: string; bio?: string; location?: string; avatarUrl?: string }>(event)
 
   const fields: string[] = []
   const params: unknown[] = []
   let pi = 1
 
-  if (body.bio      !== undefined) { fields.push(`bio = $${pi}`);        params.push(body.bio);        pi++ }
-  if (body.location !== undefined) { fields.push(`location = $${pi}`);   params.push(body.location);   pi++ }
+  // — Ник —
+  if (body.username !== undefined) {
+    const username = body.username.trim()
+    if (username.length < 3 || username.length > 50) {
+      throw createError({ statusCode: 400, message: 'Ник должен быть от 3 до 50 символов' })
+    }
+    // Проверка уникальности (исключая самого себя)
+    const taken = await queryOne(
+      'SELECT id FROM users WHERE LOWER(username) = LOWER($1) AND id <> $2',
+      [username, userId],
+    )
+    if (taken) {
+      throw createError({ statusCode: 409, message: 'Этот ник уже занят' })
+    }
+    fields.push(`username = $${pi}`); params.push(username); pi++
+  }
+
+  if (body.bio       !== undefined) { fields.push(`bio = $${pi}`);        params.push(body.bio);       pi++ }
+  if (body.location  !== undefined) { fields.push(`location = $${pi}`);   params.push(body.location);  pi++ }
   if (body.avatarUrl !== undefined) { fields.push(`avatar_url = $${pi}`); params.push(body.avatarUrl); pi++ }
 
   if (!fields.length) throw createError({ statusCode: 400, message: 'Нет полей для обновления' })
@@ -25,10 +42,10 @@ export default defineEventHandler(async (event) => {
   )
 
   return {
-    id:        updated!.id,
-    username:  updated!.username,
-    bio:       updated!.bio,
-    location:  updated!.location,
-    avatarUrl: updated!.avatar_url ?? '/images/avatars/default_avatar.svg',
+    id:         updated!.id,
+    username:   updated!.username,
+    bio:        updated!.bio,
+    location:   updated!.location,
+    avatar_url: updated!.avatar_url ?? '/images/avatars/default_avatar.svg',
   }
 })
